@@ -1,0 +1,15 @@
+﻿<Window x:Class="DeskTopPlayer.DeskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DeskTopPlayer"
+        mc:Ignorable="d"
+        Left="0" Top="0"
+        WindowStyle="None" WindowState="Maximized" AllowsTransparency="False"
+        ResizeMode="NoResize" 
+        Title="DeskWindow" Height="768" Width="1366" Background="Black">
+    <Grid x:Name="rootGrid">
+        <MediaElement x:Name="MediaPlayer" LoadedBehavior="Manual" MediaEnded="MediaPlayer_MediaEnded"/>
+    </Grid>
+</Window>
