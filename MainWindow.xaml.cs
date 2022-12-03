@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Media;
 
 namespace DeskTopPlayer
 {
@@ -11,16 +12,8 @@ namespace DeskTopPlayer
     /// </summary>
     public partial class MainWindow : Window, IIdentityInterface
     {
-        private readonly Controller controller;
-        public DeskWindow? deskWindow = null;
-        public MainWindow()
-        {
-            InitializeComponent();
-            controller = new(this);
-
-            Closed += (_, _) => Environment.Exit(0);
-        }
-
+		
+		private readonly Controller controller;
         #region IIdentityInterface 接口
         /// <summary>
         /// 获取插件名称
@@ -148,11 +141,50 @@ namespace DeskTopPlayer
         /// <returns>根启动文件名称</returns>
         public string GetRootStartupFileName() => "DeskTopPlayer.dll";
         #endregion
+		
+		
+        public DeskWindow? deskWindow = null;
+        public MainWindow()
+        {
+            InitializeComponent();
+            string[] pargs = Environment.GetCommandLineArgs();
+            if (pargs.Length > 1)
+            {
+                string video_path = pargs[1];
+                ShowDesk();
+                ShowParaVideo(video_path);
+            }
+        }
+        private static int DaysDiff(DateTime start, DateTime end)
+        {
+            // 计算时间间隔
+            TimeSpan sp = end.Subtract(start);
+            return sp.Days;  
+        }
+
+        private static string MakeChart(DateTime dateTime)
+        {
+            // 按星期选择课表
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"\Assets\ChartData.txt";
+            string[] allCharts = System.IO.File.ReadAllLines(path);
+            return allCharts[Convert.ToInt32(dateTime.DayOfWeek) + 1];
+        }
 
         private void ShowDeskBg_Click(object sender, RoutedEventArgs e)
         {
+            ShowDesk();
+        }
+
+        private void ShowDesk()
+        {
+            string path = AppDomain.CurrentDomain.BaseDirectory + @"\Assets\ChartData.txt";
+            string[] allCharts = System.IO.File.ReadAllLines(path);
+            int GKyear = Convert.ToInt32(allCharts[8]);// 高考年份
+
             if (deskWindow == null)
             {
+                int leftDays = DaysDiff(DateTime.Today, new DateTime(GKyear, 6, 7));
+
                 // 创建 DeskWindow 窗口
                 deskWindow = new DeskWindow
                 {
@@ -160,11 +192,68 @@ namespace DeskTopPlayer
                     Width = SystemParameters.PrimaryScreenWidth,
                     Height = SystemParameters.PrimaryScreenHeight
                 };
+                deskWindow.ChangeDays(leftDays.ToString());
+                deskWindow.ChangeCharts(MakeChart(DateTime.Today));
                 deskWindow.Show();
                 Tools.SetDeskTop(deskWindow);
             }
+            else
+            {
+                int leftDays = DaysDiff(DateTime.Today, new DateTime(GKyear, 6, 7));
+                deskWindow.ChangeDays(leftDays.ToString());
+                deskWindow.ChangeCharts(MakeChart(DateTime.Today));
+            }
         }
 
+        private void ReWriteCharts_Click(object sender, RoutedEventArgs e)
+        {
+            // 重写课表
+            if (deskWindow == null)
+            {
+                return;
+            }
+            deskWindow.ChangeCharts(this.chartsInput.Text);
+
+        }
+
+        private int color_counts = 0;
+        private SolidColorBrush ColorTextNow = Brushes.White;
+        private void ChangeFColorBg_Click(object sender, RoutedEventArgs e)
+        {
+            // 更换字体颜色
+            if (deskWindow == null)
+            {
+                return;
+            }
+            switch (color_counts)
+            {
+                case 0 :
+                    ColorTextNow = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#66CCFF"));
+                    color_counts++;
+                    break;
+                case 1 :
+                    ColorTextNow = new SolidColorBrush((Color)ColorConverter.ConvertFromString("yellow"));
+                    color_counts++;
+                    break;
+                case 2:
+                    ColorTextNow = new SolidColorBrush((Color)ColorConverter.ConvertFromString("red"));
+                    color_counts++;
+                    break;
+                case 3:
+                    ColorTextNow = new SolidColorBrush((Color)ColorConverter.ConvertFromString("black"));
+                    color_counts++;
+                    break;
+                default :
+                    ColorTextNow = new SolidColorBrush((Color)ColorConverter.ConvertFromString("white"));
+                    color_counts = 0;
+                    break;
+            }
+
+            deskWindow.LeftDaysTitle.Foreground = ColorTextNow;
+            deskWindow.ChartsTitle.Foreground = ColorTextNow;
+            deskWindow.Charts.Foreground = ColorTextNow;
+            deskWindow.TextDay.Foreground = ColorTextNow;
+        }
         private void ChooseVideoBg_Click(object sender, RoutedEventArgs e)
         {
             // 选择视频并播放
@@ -182,6 +271,23 @@ namespace DeskTopPlayer
             }
             deskWindow.MediaPlay(dialog.FileName);
             deskWindow.MediaPlayer.Volume = (double)volumeSlider.Value;
+            //deskChild.MediaPlay(dialog.FileName);
+        }
+
+        private void ShowParaVideo(string video_path)
+        {
+            if (deskWindow == null)
+            {
+                return;
+            }
+            volumeSlider.Value = 0;
+            deskWindow.MediaPlay(video_path);
+            deskWindow.MediaPlayer.Volume = (double)volumeSlider.Value;
+            ColorTextNow = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#66CCFF"));
+            deskWindow.LeftDaysTitle.Foreground = ColorTextNow;
+            deskWindow.ChartsTitle.Foreground = ColorTextNow;
+            deskWindow.Charts.Foreground = ColorTextNow;
+            deskWindow.TextDay.Foreground = ColorTextNow;
         }
 
         private void ChangeVolume(object sender, RoutedPropertyChangedEventArgs<double> args)
@@ -196,12 +302,17 @@ namespace DeskTopPlayer
 
         private void StopDeskBg_Click(object sender, RoutedEventArgs e)
         {
-            // 关闭deskwindow
+            // 关闭deskwindow、deskhild
             if (deskWindow != null)
             {
                 deskWindow.Close();
                 deskWindow = null;
             }
+            //if (deskChild != null)
+            //{
+            //    deskChild.Close();
+            //    deskChild = null;
+            //}
         }
 
         private void Window_Closed(object sender, System.EventArgs e)

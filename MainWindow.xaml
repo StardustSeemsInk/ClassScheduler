@@ -7,9 +7,12 @@
         mc:Ignorable="d" Closed="Window_Closed"
         Title="DeskTopPlayer-Controller" Height="250" Width="600" Icon="/DeskTopPlayer;component/Assets/th.ico">
     <Grid>
+        <TextBox Height="30" x:Name="chartsInput" FontSize="20" Margin="62,70,0,0" HorizontalAlignment="Left" Width="278" VerticalAlignment="Top" >自定义今日课表…</TextBox>
         <Button Width="80" Height="40" x:Name="ShowDeskBg" FontSize="20" Margin="170,0,0,33" Click="ShowDeskBg_Click" VerticalAlignment="Bottom" HorizontalAlignment="Left">显示</Button>
+        <Button Width="80" Height="40" x:Name="ChangeFontColorBg" FontSize="20" Margin="425,0,0,33" Click="ChangeFColorBg_Click" VerticalAlignment="Bottom" HorizontalAlignment="Left">改颜色</Button>
         <Button Width="80" Height="40" x:Name="StopDeskBg" FontSize="20" Margin="300,0,0,33" Click="StopDeskBg_Click" VerticalAlignment="Bottom" HorizontalAlignment="Left">停止</Button>
         <Button Width="80" Height="40" x:Name="ChooseVideoBg" FontSize="20" Margin="38,0,0,33" Click="ChooseVideoBg_Click" VerticalAlignment="Bottom" HorizontalAlignment="Left">选择</Button>
+        <Button Height="30" x:Name="chartsRewrite" FontSize="20" Margin="345,70,0,0" Click="ReWriteCharts_Click" VerticalAlignment="Top" HorizontalAlignment="Left" Width="59">确认</Button>
         <Slider Name="volumeSlider" VerticalAlignment="Center" ValueChanged="ChangeVolume" Minimum="0" Maximum="1" Value="0.5" Width="350" HorizontalAlignment="Left" Margin="65,0,0,0"/>
     </Grid>
 </Window>

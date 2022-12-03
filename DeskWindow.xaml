@@ -11,5 +11,13 @@
         Title="DeskWindow" Height="768" Width="1366" Background="Black">
     <Grid x:Name="rootGrid">
         <MediaElement x:Name="MediaPlayer" LoadedBehavior="Manual" MediaEnded="MediaPlayer_MediaEnded"/>
+		<Grid HorizontalAlignment="Right" Width="468" Margin="0,0,0,10">
+            <TextBlock Width="225" Height="59" x:Name="LeftDaysTitle" FontSize="40" Foreground="White" Margin="223,21,0,0" Text="距高考还有：" VerticalAlignment="Top" HorizontalAlignment="Left" />
+            <TextBlock Width="51" Height="52" x:Name="TextDay" FontSize="40" Foreground="White" Margin="343,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >天</TextBlock>
+            <TextBlock Width="120" Height="52" x:Name="LeftDays" FontSize="40" FontWeight="Bold" Foreground="Red" Margin="223,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >233</TextBlock>
+            <TextBlock Width="142" Height="64" x:Name="Clock" FontSize="50" FontWeight="Bold" Foreground="LightSkyBlue" Margin="252,604,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >20:44</TextBlock>
+            <TextBlock Width="82" FontSize="30" x:Name="ChartsTitle" Foreground="White" Margin="0,154,84,0" HorizontalAlignment="Right" Height="47" VerticalAlignment="Top" >课表</TextBlock>
+            <TextBlock Width="38" Height="552" x:Name="Charts" FontSize="30" Foreground="White" Margin="394,154,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >语</TextBlock>
+        </Grid>
     </Grid>
 </Window>
