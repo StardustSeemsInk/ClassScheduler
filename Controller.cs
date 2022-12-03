@@ -28,43 +28,34 @@ namespace DeskTopPlayer
             mainwin.Show();
         }
 
-        public Function GetFunctions()
+        public List<Function> GetFunctions()
         {
-            return new Function()
+            return new List<Function>()
             {
-                FunctionsDisplayName = new Dictionary<string, Dictionary<string, string>>()
+                new Function()
                 {
+                    DisplayNames = new Dictionary<string, string>()
                     {
-                        "Default",
-                        new Dictionary<string, string>()
-                        {
-                            { "zh-cn", "嗨嗨嗨" }
-                        }
-                    }
-                },
-                FunctionParameters = new Dictionary<string, Function.ParameterList>()
-                {
+                        { "zh-cn", "你好, 世界!" },
+                        { "en-us", "Hello, World!" }
+                    },
+                    Parameters = new Dictionary<string, Dictionary<string, string>>()
                     {
-                        "Default",
-                        new Function.ParameterList()
                         {
-                            HasAppendParameters = false,
-                            AppendParameterType = "",
-                            ForeParameters = new List<Function.ParameterList.Parameter>()
+                            "par1",
+                            new Dictionary<string, string>()
                             {
-                                new Function.ParameterList.Parameter()
-                                {
-                                    DisplayName = new Dictionary<string, string>()
-                                    {
-                                        { "zh-cn", "哈哈哈" }
-                                    },
-                                    Name = "hhh",
-                                    Type = "void"
-                                }
-                            },
-                            ReturnValueType = "void"
+                                { "zh-cn", "参数1" },
+                                { "en-us", "Parameter1" }
+                            }
                         }
-                    }
+                    },
+                    ParametersType = new List<string>()
+                    {
+                        "void"
+                    },
+                    HasAppendParameters = false,
+                    ReturnValueType = "void"
                 }
             };
         }
