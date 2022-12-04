@@ -7,7 +7,7 @@ namespace DeskTopPlayer
 {
     public class Controller : IController
     {
-        private readonly MainWindow mainwin;
+        private MainWindow mainwin;
 
         public Controller(MainWindow mainwin)
         {
@@ -69,7 +69,8 @@ namespace DeskTopPlayer
 		
         public void SetRootPath(string path)
         {
-            MessageBox.Show($"SetRootPath({path})");
+            Global.RootPath = path;
+            Events.Invoke(nameof(Events.OnSetRootPath));
         }
 
         public void SetWorkPath(string path)
