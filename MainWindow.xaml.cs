@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace DeskTopPlayer
 {
@@ -147,6 +148,7 @@ namespace DeskTopPlayer
         public MainWindow()
         {
             InitializeComponent();
+            controller = new(this);
             string[] pargs = Environment.GetCommandLineArgs();
             if (pargs.Length > 1)
             {
@@ -154,6 +156,11 @@ namespace DeskTopPlayer
                 ShowDesk();
                 ShowParaVideo(video_path);
             }
+
+            Events.OnSetRootPath += () =>
+            {
+                Icon = new BitmapImage(new($"{Global.RootPath}/Assets/th.ico", UriKind.Absolute));
+            };
         }
         private static int DaysDiff(DateTime start, DateTime end)
         {
@@ -165,9 +172,13 @@ namespace DeskTopPlayer
         private static string MakeChart(DateTime dateTime)
         {
             // 按星期选择课表
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"\Assets\ChartData.txt";
-            string[] allCharts = System.IO.File.ReadAllLines(path);
-            return allCharts[Convert.ToInt32(dateTime.DayOfWeek) + 1];
+            if (Global.RootPath != null)
+            {
+                string path = Global.RootPath + @"\Assets\ChartData.txt";
+                string[] allCharts = System.IO.File.ReadAllLines(path);
+                return allCharts[Convert.ToInt32(dateTime.DayOfWeek) + 1];
+            }
+            else return string.Empty;
         }
 
         private void ShowDeskBg_Click(object sender, RoutedEventArgs e)
@@ -177,31 +188,34 @@ namespace DeskTopPlayer
 
         private void ShowDesk()
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory + @"\Assets\ChartData.txt";
-            string[] allCharts = System.IO.File.ReadAllLines(path);
-            int GKyear = Convert.ToInt32(allCharts[8]);// 高考年份
-
-            if (deskWindow == null)
+            if (Global.RootPath != null)
             {
-                int leftDays = DaysDiff(DateTime.Today, new DateTime(GKyear, 6, 7));
+                string path = Global.RootPath + @"\Assets\ChartData.txt";
+                string[] allCharts = System.IO.File.ReadAllLines(path);
+                int GKyear = Convert.ToInt32(allCharts[8]);// 高考年份
 
-                // 创建 DeskWindow 窗口
-                deskWindow = new DeskWindow
+                if (deskWindow == null)
                 {
-                    // 设置总宽/长度
-                    Width = SystemParameters.PrimaryScreenWidth,
-                    Height = SystemParameters.PrimaryScreenHeight
-                };
-                deskWindow.ChangeDays(leftDays.ToString());
-                deskWindow.ChangeCharts(MakeChart(DateTime.Today));
-                deskWindow.Show();
-                Tools.SetDeskTop(deskWindow);
-            }
-            else
-            {
-                int leftDays = DaysDiff(DateTime.Today, new DateTime(GKyear, 6, 7));
-                deskWindow.ChangeDays(leftDays.ToString());
-                deskWindow.ChangeCharts(MakeChart(DateTime.Today));
+                    int leftDays = DaysDiff(DateTime.Today, new DateTime(GKyear, 6, 7));
+
+                    // 创建 DeskWindow 窗口
+                    deskWindow = new DeskWindow
+                    {
+                        // 设置总宽/长度
+                        Width = SystemParameters.PrimaryScreenWidth,
+                        Height = SystemParameters.PrimaryScreenHeight
+                    };
+                    deskWindow.ChangeDays(leftDays.ToString());
+                    deskWindow.ChangeCharts(MakeChart(DateTime.Today));
+                    deskWindow.Show();
+                    Tools.SetDeskTop(deskWindow);
+                }
+                else
+                {
+                    int leftDays = DaysDiff(DateTime.Today, new DateTime(GKyear, 6, 7));
+                    deskWindow.ChangeDays(leftDays.ToString());
+                    deskWindow.ChangeCharts(MakeChart(DateTime.Today));
+                }
             }
         }
 
