@@ -11,7 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="KitX.Contract.CSharp" Version="22.4.6350.257" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 	</ItemGroup>
 
@@ -29,6 +28,10 @@
 
 	<ItemGroup>
 	  <None Remove="th.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Crequency\KitX\KitX Contracts\KitX.Contract.CSharp\KitX.Contract.CSharp.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

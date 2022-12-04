@@ -2,22 +2,87 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeskTopPlayer"
-        mc:Ignorable="d"
-        Left="0" Top="0"
-        WindowStyle="None" WindowState="Maximized" AllowsTransparency="False"
-        ResizeMode="NoResize" 
-        Title="DeskWindow" Height="768" Width="1366" Background="Black">
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="DeskWindow"
+        Width="1366"
+        Height="768"
+        AllowsTransparency="False"
+        Background="Black"
+        Left="0"
+        ResizeMode="NoResize"
+        Top="0"
+        WindowState="Maximized"
+        WindowStyle="None"
+        mc:Ignorable="d">
     <Grid x:Name="rootGrid">
-        <MediaElement x:Name="MediaPlayer" LoadedBehavior="Manual" MediaEnded="MediaPlayer_MediaEnded"/>
-		<Grid HorizontalAlignment="Right" Width="468" Margin="0,0,0,10">
-            <TextBlock Width="225" Height="59" x:Name="LeftDaysTitle" FontSize="40" Foreground="White" Margin="223,21,0,0" Text="距高考还有：" VerticalAlignment="Top" HorizontalAlignment="Left" />
-            <TextBlock Width="51" Height="52" x:Name="TextDay" FontSize="40" Foreground="White" Margin="343,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >天</TextBlock>
-            <TextBlock Width="120" Height="52" x:Name="LeftDays" FontSize="40" FontWeight="Bold" Foreground="Red" Margin="223,80,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >233</TextBlock>
-            <TextBlock Width="142" Height="64" x:Name="Clock" FontSize="50" FontWeight="Bold" Foreground="LightSkyBlue" Margin="252,604,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >20:44</TextBlock>
-            <TextBlock Width="82" FontSize="30" x:Name="ChartsTitle" Foreground="White" Margin="0,154,84,0" HorizontalAlignment="Right" Height="47" VerticalAlignment="Top" >课表</TextBlock>
-            <TextBlock Width="38" Height="552" x:Name="Charts" FontSize="30" Foreground="White" Margin="394,154,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" >语</TextBlock>
+        <MediaElement x:Name="MediaPlayer"
+                      LoadedBehavior="Manual"
+                      MediaEnded="MediaPlayer_MediaEnded"/>
+        <Grid Width="468"
+              Margin="0,0,0,10"
+              HorizontalAlignment="Right">
+            <TextBlock x:Name="LeftDaysTitle"
+                       Width="225"
+                       Height="59"
+                       Margin="223,21,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="40"
+                       Foreground="White"
+                       Text="距高考还有："/>
+            <TextBlock x:Name="TextDay"
+                       Width="51"
+                       Height="52"
+                       Margin="343,80,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="40"
+                       Foreground="White">
+                天
+            </TextBlock>
+            <TextBlock x:Name="LeftDays"
+                       Width="120"
+                       Height="52"
+                       Margin="223,80,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="40"
+                       FontWeight="Bold"
+                       Foreground="Red">
+                233
+            </TextBlock>
+            <TextBlock x:Name="Clock"
+                       Width="142"
+                       Height="64"
+                       Margin="252,604,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="50"
+                       FontWeight="Bold"
+                       Foreground="LightSkyBlue">
+                20:44
+            </TextBlock>
+            <TextBlock x:Name="ChartsTitle"
+                       Width="82"
+                       Height="47"
+                       Margin="0,154,84,0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       FontSize="30"
+                       Foreground="White">
+                课表
+            </TextBlock>
+            <TextBlock x:Name="Charts"
+                       Width="38"
+                       Height="552"
+                       Margin="394,154,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       FontSize="30"
+                       Foreground="White">
+                语
+            </TextBlock>
         </Grid>
     </Grid>
 </Window>
