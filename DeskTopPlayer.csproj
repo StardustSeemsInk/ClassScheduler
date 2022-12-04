@@ -28,17 +28,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Assets\ChartData.txt" />
 	  <None Remove="th.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Assets\ChartData.txt">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Resource>
-		<Resource Include="Assets\th.ico">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Resource>
+	  <None Update="Assets\ChartData.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Assets\th.ico">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 
