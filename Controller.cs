@@ -1,6 +1,7 @@
 ﻿using KitX.Contract.CSharp;
 using KitX.Web.Rules;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace DeskTopPlayer
 {
@@ -64,6 +65,16 @@ namespace DeskTopPlayer
         {
 
             return 0;
+        }
+		
+        public void SetRootPath(string path)
+        {
+            MessageBox.Show($"SetRootPath({path})");
+        }
+
+        public void SetWorkPath(string path)
+        {
+            MessageBox.Show($"SetWorkPath({path})");
         }
     }
 }
