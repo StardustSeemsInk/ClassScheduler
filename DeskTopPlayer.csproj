@@ -11,13 +11,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="KitX.Contract.CSharp" Version="22.4.6350.257" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Reference Include="WindowsFormsIntegration">
-			<HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\v3.0\WindowsFormsIntegration.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,10 +23,6 @@
 
 	<ItemGroup>
 	  <None Remove="th.ico" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Crequency\KitX\KitX Contracts\KitX.Contract.CSharp\KitX.Contract.CSharp.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
