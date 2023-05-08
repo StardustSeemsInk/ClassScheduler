@@ -1,12 +1,49 @@
-### 这是一个KitX插件。可用于在桌面显示课表（可用于希沃白板）
+# ClassScheduler
 
-## 如何打包？
- - 在项目文件目录运行dotnet bulid
- - 将LoaderStruct.json和PluginStruct.json复制到生成目录（...\bin\Debug\net6.0-windows）
- - 按照KitX的教程运行kxper打包工具
- - 将.kxp文件拖入KitX Dashboard的“仓库”页
- - 点击运行
+一个可用于在桌面显示课表（可用于希沃白板）的工具
 
-## About KitX
- 官网：https://kitx.apps.catrol.cn/
- Github：https://github.com/Crequency/KitX/
+## 关于双模式
+
+本项目支持作为独立程序启动, 并同时适配 KitX, 可以作为 KitX 插件导入 KitX Dashboard
+
+### 独立程序启动
+
+`ClassScheduler.Runner` 项目作为容器, 加载并启动 `ClassScheduler.WPF` 项目
+
+```shell
+# 获取源码
+git clone git@github.com:StardustSeemsInk/ClassScheduler.git
+
+# 进入项目目录
+cd 'ClassScheduler/ClassScheduler.Runner'
+
+# 运行程序
+dotnet run
+```
+
+### 如何为 KitX 打包
+
+```shell
+# 获取源码
+git clone git@github.com:StardustSeemsInk/ClassScheduler.git
+
+# 进入项目目录
+cd 'ClassScheduler/ClassScheduler.WPF'
+
+# 使用 Release Profile 构建
+dotnet build -c Release
+
+# 进入生成目录
+cd bin/Release/net6.0-windows/
+
+# 使用 kxpmaker 生成 kxp 插件包
+# 当前目录下会出现 net6.0-windows.kxp 文件
+# 需要提前安装 kxpmaker, 使用 kxpmaker --help 命令查看更多用法
+kxpmaker -s .
+```
+
+# About KitX Project
+
+官网：https://kitx.apps.catrol.cn/
+
+Github：https://github.com/Crequency/KitX/
