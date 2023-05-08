@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ClassScheduler.WPF;
 
-namespace DeskTopPlayer
+internal class Events
 {
-    internal class Events
+    public delegate void OnSetRootPathHandler();
+
+    public static event OnSetRootPathHandler? OnSetRootPath;
+
+    public static void InitEvents()
     {
-        public delegate void OnSetRootPathHandler();
+        OnSetRootPath += () => { };
+    }
 
-        public static event OnSetRootPathHandler? OnSetRootPath;
-
-        public static void InitEvents()
+    public static void Invoke(string name)
+    {
+        switch (name)
         {
-            OnSetRootPath += () => { };
-        }
-
-        public static void Invoke(string name)
-        {
-            switch (name)
-            {
-                case nameof(OnSetRootPath):
-                    OnSetRootPath?.Invoke();
-                    break;
-            }
+            case nameof(OnSetRootPath):
+                OnSetRootPath?.Invoke();
+                break;
         }
     }
 }

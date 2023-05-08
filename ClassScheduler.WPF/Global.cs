@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ClassScheduler.WPF;
 
-namespace DeskTopPlayer
+public class Global
 {
-    public class Global
-    {
-        public static string? RootPath { get; set; }
-    }
+    public static string? RootPath { get; set; }
 }
