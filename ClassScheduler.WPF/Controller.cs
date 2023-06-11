@@ -154,17 +154,71 @@ public class Controller : IController
         };
     }
 
-    private void AnalyzeCmd(Command cmd, Function kxpfunc, Action action)
-    {
-        if (cmd.Request == kxpfunc.Name) action.Invoke();
-    }
+    //private void AnalyzeCmd(Command cmd, Function kxpfunc, int commandType, string methodName)
+    //{
+
+    //    Command callBackCommand = cmd;
+    //    if (cmd.Request == kxpfunc.Name)
+    //    {
+    //        if (commandType == 2)
+    //        {
+    //            Type type = mainwin.GetType();
+    //            Object obj = Activator.CreateInstance(type);
+    //            object[] parameters = new object[] { cmd.RequestArgs };
+    //            var method = type.GetMethod(methodName, new Type[] { });
+    //            var a = method.Invoke(obj, parameters);
+    //            callBackCommand.Type = CommandType.CallBack;
+    //            callBackCommand.Sender = cmd.Target;
+    //            callBackCommand.Target = cmd.Sender;
+    //            callBackCommand.Body = (byte[])a;
+    //        }
+    //    }
+    //}
 
     public void Execute(Command cmd)
     {
-        AnalyzeCmd(cmd, ssv, delegate () { mainwin.KXPChangeVolume(Convert.ToDouble(cmd.RequestArgs[0])); }) ;
-        AnalyzeCmd(cmd, cm, delegate () { mainwin.KXPChangeMedia(cmd.RequestArgs[0]); }) ;
-        AnalyzeCmd(cmd, gsv, delegate () { mainwin.KXPGetSoundVolume(); }) ;
-        AnalyzeCmd(cmd, gmp, delegate () { mainwin.KXPGetMediaPath(); }) ;
+        //AnalyzeCmd(cmd, ssv, 0, "KXPChangeVolume") ;
+        //AnalyzeCmd(cmd, cm, 0, "KXPChangeMedia") ;
+        //AnalyzeCmd(cmd, gsv, 2, "KXPGetSoundVolume") ;
+        //AnalyzeCmd(cmd, gmp, 2, "KXPGetMediaPath") ;
+        if  (cmd.Request == ssv.Name)
+        {
+            double volume;
+            double.TryParse(cmd.RequestArgs[0], out volume);
+            mainwin.KXPChangeVolume(volume);
+            return;
+        };
+
+        if (cmd.Request == cm.Name)
+        {
+            mainwin.KXPChangeMedia(cmd.RequestArgs[0]);
+            return;
+        };
+
+        if (cmd.Request == gsv.Name)
+        {
+            double sv = mainwin.KXPGetSoundVolume();
+            Command callBackCommand = cmd;
+            callBackCommand.Type = CommandType.CallBack;
+            callBackCommand.Sender = cmd.Target;
+            callBackCommand.Target = cmd.Sender;
+            callBackCommand.Body = BitConverter.GetBytes(sv);
+            mainwin.sendCommandAction(callBackCommand);
+
+        };
+
+        if (cmd.Request == gmp.Name)
+        {
+            string? mp = mainwin.KXPGetMediaPath();
+            Command callBackCommand = cmd;
+            callBackCommand.Type = CommandType.CallBack;
+            callBackCommand.Sender = cmd.Target;
+            callBackCommand.Target = cmd.Sender;
+            callBackCommand.Body = System.Text.Encoding.Default.GetBytes(mp);
+            mainwin.sendCommandAction(callBackCommand);
+
+        };
+
     }
 
     public void SetRootPath(string path)
