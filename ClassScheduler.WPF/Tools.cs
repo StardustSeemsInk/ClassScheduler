@@ -9,7 +9,7 @@ class Tools
     [DllImport("user32.dll")]
     public static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern IntPtr FindWindow(string className, string? winName);
 
     [DllImport("user32.dll")]
@@ -19,7 +19,7 @@ class Tools
     [DllImport("user32.dll")]
     public static extern IntPtr SetParent(IntPtr hwnd, IntPtr parentHwnd);
 
-    [DllImport("user32.dll")]
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string className, string? winName);
 
     [DllImport("user32.dll")]
