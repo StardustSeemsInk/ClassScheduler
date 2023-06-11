@@ -1,7 +1,9 @@
 ﻿using KitX.Contract.CSharp;
+using KitX.Web.Rules;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,6 +18,10 @@ public partial class MainWindow : Window, IIdentityInterface
     private readonly Controller controller;
 
     public DeskWindow? deskWindow = null;
+
+    public string? mediaPath;
+
+    internal Action<Command>? sendCommandAction;
 
     public MainWindow()
     {
@@ -176,7 +182,8 @@ public partial class MainWindow : Window, IIdentityInterface
             return;
         }
 
-        deskWindow.MediaPlay(dialog.FileName);
+        mediaPath = dialog.FileName;
+        deskWindow.MediaPlay(mediaPath);
 
         deskWindow.MediaPlayer.Volume = (double)volumeSlider.Value;
     }
@@ -378,6 +385,39 @@ public partial class MainWindow : Window, IIdentityInterface
     /// </summary>
     /// <returns>根启动文件名称</returns>
     public string GetRootStartupFileName() => "ClassScheduler.WPF.dll";
+
+    #endregion
+
+    #region kxp方法调用
+    public void KXPChangeVolume(double volume)
+    {
+        volumeSlider.Value = volume;
+        // 音量调节
+        if (deskWindow is null) return;
+
+        deskWindow.MediaPlayer.Volume = (double)volumeSlider.Value;
+    }
+
+    public void KXPChangeMedia(string path)
+    {
+        // 选择视频并播放
+        if (!Directory.Exists(path))
+        {
+            MessageBox.Show($"error:FILE\"({path})\"NOT EXIST");
+            return;
+        };
+
+        if (deskWindow is null) return;
+
+        mediaPath = path;
+        deskWindow.MediaPlay(path);
+
+        deskWindow.MediaPlayer.Volume = (double)volumeSlider.Value;
+    }
+
+    public double KXPGetSoundVolume() => volumeSlider.Value;
+    
+    public string? KXPGetMediaPath() => mediaPath;
 
     #endregion
 
