@@ -1,4 +1,10 @@
-# ClassScheduler
+![Static Badge](https://img.shields.io/badge/Stand_with-China-F61C1C) 
+![Static Badge](https://img.shields.io/badge/Stand_with-Ukraine-ffd700) 
+![Static Badge](https://img.shields.io/badge/Stand_with-Russia-blue) 
+![Static Badge](https://img.shields.io/badge/Stand_with-Peace-white) 
+
+
+# ClassScheduler 
 
 一个可用于在桌面显示课表（可用于希沃白板）的工具
 
