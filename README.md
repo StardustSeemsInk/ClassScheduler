@@ -1,4 +1,5 @@
 ![Static Badge](https://img.shields.io/badge/Stand_with-China-F61C1C) 
+![Static Badge](https://img.shields.io/badge/Stand_with-USA-red)
 ![Static Badge](https://img.shields.io/badge/Stand_with-Ukraine-ffd700) 
 ![Static Badge](https://img.shields.io/badge/Stand_with-Russia-blue) 
 ![Static Badge](https://img.shields.io/badge/Stand_with-Peace-white) 
