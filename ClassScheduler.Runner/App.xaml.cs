@@ -6,16 +6,8 @@ using System.Windows;
 
 namespace ClassScheduler.Runner;
 
-/// <summary>
-/// Interaction logic for App.xaml
-/// </summary>
 public partial class App : Application
 {
-    /// <summary>
-    /// 启动事件
-    /// </summary>
-    /// <param name="sender">事件发送者</param>
-    /// <param name="e">启动参数</param>
     private void Application_Startup(object sender, StartupEventArgs e)
     {
         try
@@ -24,8 +16,12 @@ public partial class App : Application
         }
         catch (Exception o)
         {
-            MessageBox.Show(o.Message, "Loader Error",
-                MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(
+                o.Message,
+                "Loader Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
 
             Console.WriteLine(o.Message);
 
@@ -33,10 +29,6 @@ public partial class App : Application
         }
     }
 
-    /// <summary>
-    /// 加载插件
-    /// </summary>
-    /// <param name="path">插件路径</param>
     private static void LoadPlugin(string path)
     {
         if (File.Exists(path))
