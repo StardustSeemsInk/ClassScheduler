@@ -3,7 +3,6 @@ using KitX.Contract.CSharp;
 using KitX.Web.Rules;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace ClassScheduler.WPF;
 

@@ -8,6 +8,7 @@
         <Company>null</Company>
         <Authors>StarInk</Authors>
         <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
