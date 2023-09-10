@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ClassScheduler.WPF.Views;
 
 namespace ClassScheduler.WPF;
 
@@ -12,10 +8,12 @@ internal static class Instances
     {
         MainWindow = new();
 
-        Controller = new(MainWindow);
+        Controller = new();
     }
 
     internal static MainWindow? MainWindow { get; set; }
+
+    internal static ScheduleWindow? DeskWindow { get; set; }
 
     internal static Controller? Controller { get; set; }
 }

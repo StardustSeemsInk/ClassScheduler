@@ -9,6 +9,7 @@
         <Authors>StarInk</Authors>
         <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Platforms>AnyCPU;x64</Platforms>
     </PropertyGroup>
 
     <ItemGroup>

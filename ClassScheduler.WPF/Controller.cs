@@ -8,26 +8,21 @@ namespace ClassScheduler.WPF;
 
 public class Controller : IController
 {
-    private readonly MainWindow mainwin;
-
-    public Controller(MainWindow mainwin)
-    {
-        this.mainwin = mainwin;
-    }
+    private Action<Command>? sendCommandAction;
 
     public void Start()
     {
-        mainwin.Show();
+        Instances.MainWindow?.Show();
     }
 
     public void Pause()
     {
-        mainwin.WinPause();
+        Instances.MainWindow?.Pause();
     }
 
     public void End()
     {
-        mainwin.WinExit();
+        Instances.MainWindow?.Exit();
     }
 
     public List<Function> GetFunctions() => new();
@@ -44,7 +39,7 @@ public class Controller : IController
         Events.Invoke(nameof(Events.OnSetRootPath));
     }
 
-    public void SetSendCommandAction(Action<Command> action) => mainwin.sendCommandAction = action;
+    public void SetSendCommandAction(Action<Command> action) => sendCommandAction = action;
 
     public void SetWorkPath(string path)
     {

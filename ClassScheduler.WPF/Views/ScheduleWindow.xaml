@@ -1,0 +1,91 @@
+﻿<Window x:Class="ClassScheduler.WPF.Views.ScheduleWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="DeskWindow"
+        Width="1920"
+        Height="1080"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        WindowState="Maximized"
+        WindowStyle="None"
+        Topmost="True"
+        mc:Ignorable="d">
+    <Grid Margin="20">
+        <StackPanel HorizontalAlignment="Right"
+                    VerticalAlignment="Top">
+            <Grid>
+                <Border Background="Black"
+                        Opacity="0.3"
+                        CornerRadius="15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black"
+                                          Direction="305"
+                                          ShadowDepth="5" 
+                                          Opacity="0.7" 
+                                          BlurRadius="15"/>
+                    </Border.Effect>
+                </Border>
+                <StackPanel Margin="20">
+                    <TextBlock x:Name="TextBlock_Time"
+                           Text="10:27"
+                           FontSize="96"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="White"/>
+                    <Border Height="10"/>
+                    <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+                        <TextBlock x:Name="TextBlock_Date"
+                               Text="09 月 10 日"
+                               FontSize="36"
+                               HorizontalAlignment="Center"
+                               Foreground="White"/>
+                        <Border Width="20"/>
+                        <TextBlock x:Name="TextBlock_WeekDay"
+                               Text="星期一"
+                               FontSize="36"
+                               HorizontalAlignment="Center"
+                               Foreground="White"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <Border Height="20"/>
+            <Grid>
+                <Border Background="Black"
+                        Opacity="0.3"
+                        CornerRadius="15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black"
+                                          Direction="305"
+                                          ShadowDepth="5" 
+                                          Opacity="0.7" 
+                                          BlurRadius="15"/>
+                    </Border.Effect>
+                </Border>
+                <StackPanel Orientation="Horizontal"
+                            Margin="20">
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="40"
+                               Foreground="White"
+                               FontFamily="Microsoft YaHei"
+                               Text="距高考还有 "/>
+                    <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Center"
+                               FontSize="40"
+                               FontWeight="Bold"
+                               FontFamily="Microsoft YaHei"
+                               Foreground="#FFFF5E5E"
+                               Text="233"/>
+                    <TextBlock VerticalAlignment="Center"
+                               FontSize="40"
+                               Foreground="White"
+                               FontFamily="Microsoft YaHei"
+                               Text=" 天"/>
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>

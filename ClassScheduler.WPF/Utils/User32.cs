@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows;
 
 namespace ClassScheduler.WPF.Utils;
@@ -24,62 +23,72 @@ public partial class User32
     internal static partial nint SetParent(nint hwnd, nint parentHwnd);
 
     [LibraryImport(user32dllPath, StringMarshalling = StringMarshalling.Utf16)]
-    public static partial nint FindWindowEx(nint hwndParent, nint hwndChildAfter, string className, string? winName);
+    public static partial nint FindWindowEx(
+        nint hwndParent,
+        nint hwndChildAfter,
+        string className,
+        string? winName);
 
     [LibraryImport(user32dllPath)]
-    internal static partial nint SendMessageTimeout(nint hwnd, uint msg, nint wParam, nint lParam, uint fuFlage, uint timeout, nint result);
+    internal static partial nint SendMessageTimeout(
+        nint hwnd,
+        uint msg,
+        nint wParam,
+        nint lParam,
+        uint fuFlage,
+        uint timeout,
+        nint result);
+}
 
-    public static void SetDeskTop(Window wpfWindow)
+public static class User32Extensions
+{
+    public static void MoveToBottom(this Window wpfWindow)
     {
-        var programIntPtr = FindWindow("Progman", null);
+        var programIntPtr = User32.FindWindow("Progman", null);
 
-        Console.WriteLine(programIntPtr);
+        if (programIntPtr == nint.Zero) // Ensure we found the `progman`
+            return;
 
-        // 窗口句柄有效
-        if (programIntPtr != nint.Zero)
+        var result = nint.Zero;
+
+        User32.SendMessageTimeout(
+            programIntPtr,
+            0x052C,
+            nint.Zero,
+            nint.Zero,
+            0x0000,
+            1000,
+            nint.Zero
+        );
+
+        // Foreach top layer windows
+        User32.EnumWindows((hwnd, lParam) =>
         {
-            var result = nint.Zero;
-
-            SendMessageTimeout(
-                programIntPtr,
-                0x052C,
-                nint.Zero,
-                nint.Zero,
-                0x0000,
-                1000,
-                nint.Zero
-            );
-
-            // 遍历顶级窗口
-            EnumWindows((hwnd, lParam) =>
+            // Find `WorkerW` which includes handle of `SHELLDLL_DefView`
+            if (User32.FindWindowEx(
+                    hwnd,
+                    nint.Zero,
+                    "SHELLDLL_DefView",
+                    null
+                ) != nint.Zero)
             {
-                // 找到包含 SHELLDLL_DefView 这个窗口句柄的 WorkerW
-                if (FindWindowEx(
-                        hwnd,
-                        nint.Zero,
-                        "SHELLDLL_DefView",
-                        null
-                    ) != nint.Zero)
-                {
-                    // 找到当前 WorkerW 窗口的，后一个 WorkerW 窗口。 
-                    var tempHwnd = FindWindowEx(
-                        nint.Zero,
-                        hwnd,
-                        "WorkerW",
-                        null
-                    );
+                // Find the next `WorkerW` window after current one
+                var tempHwnd = User32.FindWindowEx(
+                    nint.Zero,
+                    hwnd,
+                    "WorkerW",
+                    null
+                );
 
-                    // 隐藏这个窗口
-                    ShowWindow(tempHwnd, 0);
-                }
-                return true;
-            }, nint.Zero);
-        }
+                // Hide this window
+                User32.ShowWindow(tempHwnd, 0);
+            }
+            return true;
+        }, nint.Zero);
 
-        SetParent(
+        User32.SetParent(
             new System.Windows.Interop.WindowInteropHelper(wpfWindow).Handle,
             programIntPtr
         );
-
     }
 }
