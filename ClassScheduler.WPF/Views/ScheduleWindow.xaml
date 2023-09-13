@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         WindowState="Maximized"
         WindowStyle="None"
-        Topmost="True"
+        ShowInTaskbar="False"
         mc:Ignorable="d">
     <Grid Margin="20">
         <StackPanel HorizontalAlignment="Right"
@@ -86,6 +86,53 @@
                                Text=" 天"/>
                 </StackPanel>
             </Grid>
+            <Border Height="20"/>
+            <Grid>
+                <Border Background="Black"
+                        Opacity="0.3"
+                        CornerRadius="15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black"
+                                          Direction="305"
+                                          ShadowDepth="5" 
+                                          Opacity="0.7" 
+                                          BlurRadius="15"/>
+                    </Border.Effect>
+                </Border>
+                <StackPanel x:Name="StackPanel_ClassesContainer" Margin="20" HorizontalAlignment="Center"
+                            Orientation="Horizontal">
+                    
+                </StackPanel>
+                <!--<TextBlock x:Name="TextBlock_ClassesList" Text="语语语语语语语语语语" Foreground="White" FontSize="32"
+                           HorizontalAlignment="Center" Margin="20"/>-->
+            </Grid>
+            <Border Height="20"/>
+            <!--<Grid>
+                <Border Background="Black"
+                        Opacity="0.3"
+                        CornerRadius="15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black"
+                                          Direction="305"
+                                          ShadowDepth="5" 
+                                          Opacity="0.7" 
+                                          BlurRadius="15"/>
+                    </Border.Effect>
+                </Border>
+                <StackPanel Orientation="Horizontal"
+                            Margin="20"
+                            HorizontalAlignment="Right">
+                    <Button x:Name="Button_OpenSettings"
+                            Content="⚙"
+                            FontSize="24"
+                            Click="Button_OpenSettings_Click"/>
+                    <Border Width="20"/>
+                    <Button x:Name="Button_QuitApp"
+                            Content="❎"
+                            FontSize="24"
+                            Click="Button_QuitApp_Click"/>
+                </StackPanel>
+            </Grid>-->
         </StackPanel>
     </Grid>
 </Window>

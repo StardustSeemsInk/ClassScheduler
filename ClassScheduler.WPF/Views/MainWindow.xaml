@@ -4,11 +4,52 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="ClassScheduler.WPF-Controller"
-        Width="600"
-        Height="250"
+        Title="ClassScheduler.WPF"
+        Width="460"
+        Height="600"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Grid>
-        
+        <DockPanel HorizontalAlignment="Left" Margin="20" Width="400">
+            <StackPanel DockPanel.Dock="Top">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="课堂名称: "/>
+                    <TextBox x:Name="TextBox_ClassName" Width="100"/>
+                </StackPanel>
+                <Border Height="10"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="周 "/>
+                    <TextBox x:Name="TextBox_WeekDay" Width="30" IsReadOnly="True"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_1" Content="1" Click="Button_1_Click"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_2" Content="2" Click="Button_2_Click"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_3" Content="3" Click="Button_3_Click"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_4" Content="4" Click="Button_4_Click"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_5" Content="5" Click="Button_5_Click"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_6" Content="6" Click="Button_6_Click"/>
+                    <Border Width="5"/>
+                    <Button x:Name="Button_7" Content="7" Click="Button_7_Click"/>
+                </StackPanel>
+                <Border Height="10"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="开始时间: "/>
+                    <DatePickerTextBox x:Name="DatePicker_BeginTime" Text="11:15"/>
+                </StackPanel>
+                <Border Height="10"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="结束时间: "/>
+                    <DatePickerTextBox x:Name="DatePicker_EndTime" Text="12:00"/>
+                </StackPanel>
+                <Border Height="10"/>
+                <Button x:Name="Button_Add" Content="添加" Click="Button_Add_Click"/>
+                <Border Height="10"/>
+            </StackPanel>
+            <ListBox x:Name="ListBox_Classes" SelectionChanged="ListBox_Classes_SelectionChanged"/>
+        </DockPanel>
     </Grid>
 </Window>
