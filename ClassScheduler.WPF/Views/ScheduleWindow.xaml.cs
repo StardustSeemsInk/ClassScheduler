@@ -10,7 +10,7 @@ namespace ClassScheduler.WPF.Views;
 
 public partial class ScheduleWindow : Window
 {
-    private Timer _timer;
+    private readonly Timer _timer;
 
     public ScheduleWindow()
     {

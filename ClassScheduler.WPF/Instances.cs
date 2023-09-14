@@ -14,6 +14,7 @@ internal static class Instances
 
         Classes = "./Data/Classes.json".Load();
         Classes ??= new();
+        Classes.Sort();
         Classes.Save("./Data/Classes.json");
 
         MainWindow = new();
