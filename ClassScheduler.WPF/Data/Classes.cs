@@ -15,20 +15,21 @@ public class Classes
     public Classes Sort()
     {
         ClassesList.Sort(
-            new Comparison<ClassModel>(
-                (x, y) =>
+            (x, y) =>
+            {
+                if (x.WeekDay == y.WeekDay)
                 {
-                    if (x.WeekDay == y.WeekDay)
-                    {
-                        if (x.BeginTime == y.BeginTime)
-                            return 0;
-                        else
-                            return x.BeginTime > y.BeginTime ? 1 : -1;
-                    }
-                    else
-                        return x.WeekDay > y.WeekDay ? 1 : -1;
+                    var x_begin = DateTime.Parse(x.BeginTime?.ToString("HH:mm")!);
+                    var y_begin = DateTime.Parse(y.BeginTime?.ToString("HH:mm")!);
+                    var x_end = DateTime.Parse(x.EndTime?.ToString("HH:mm")!);
+                    var y_end = DateTime.Parse(y.EndTime?.ToString("HH:mm")!);
+
+                    if (x_begin == y_begin && x_end == y_end)
+                        return x.Name!.CompareTo(y.Name);
+                    else return x_begin.CompareTo(y_end);
                 }
-            )
+                else return x.WeekDay > y.WeekDay ? 1 : -1;
+            }
         );
 
         return this;
