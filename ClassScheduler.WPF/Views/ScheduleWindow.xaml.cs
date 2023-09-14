@@ -1,5 +1,6 @@
 ﻿using ClassScheduler.WPF.Utils;
 using System;
+using System.Linq;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,7 +10,7 @@ namespace ClassScheduler.WPF.Views;
 
 public partial class ScheduleWindow : Window
 {
-    private Timer _timer;
+    private readonly Timer _timer;
 
     public ScheduleWindow()
     {
@@ -67,7 +68,10 @@ public partial class ScheduleWindow : Window
 
         Instances.Classes!.Sort();
 
-        var todayPassedClassesCount = 0;
+        var passedClassesIndex = 0;
+        var totalPassesClassesCount = Instances.Classes!.ClassesList.Where(
+            x => x.EndTime < DateTime.Now && x.DayOfWeek == (int)DateTime.Now.DayOfWeek
+        ).Count() * 1.0;
 
         foreach (var classModel in Instances.Classes!.ClassesList)
         {
@@ -88,11 +92,11 @@ public partial class ScheduleWindow : Window
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0x5E, 0x5E));
             else if (now >= end)
             {
-                ++todayPassedClassesCount;
+                ++passedClassesIndex;
 
-                var originColor = 200;
-                var deltaColor = 80;
-                var targetColor = (byte)(originColor - (deltaColor / todayPassedClassesCount) + 20);
+                var originColor = 140;
+                var colorRange = 60;
+                var targetColor = (byte)(originColor + (passedClassesIndex / totalPassesClassesCount) * colorRange);
 
                 tb.Foreground = new SolidColorBrush(
                     Color.FromRgb(targetColor, targetColor, targetColor)

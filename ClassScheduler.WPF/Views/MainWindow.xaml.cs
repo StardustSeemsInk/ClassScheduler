@@ -166,6 +166,7 @@ public partial class MainWindow : Window
             textBlock.MouseRightButtonDown += (_, _) =>
             {
                 Instances.Classes.ClassesList.RemoveAt(currentIndex);
+                Instances.Classes.Save("./Data/Classes.json");
                 RefreshClasses();
             };
 
