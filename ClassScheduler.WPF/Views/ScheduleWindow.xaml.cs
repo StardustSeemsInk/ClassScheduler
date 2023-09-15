@@ -106,8 +106,8 @@ public partial class ScheduleWindow : Window
                 ++passedClassesIndex;
 
                 var originColor = 180;
-                var colorRange = 50;
-                var targetColor = (byte)(originColor + ((passedClassesIndex / totalPassesClassesCount) - 1) * colorRange);
+                var colorRange = 70;
+                var targetColor = (byte)(originColor + (passedClassesIndex / totalPassesClassesCount) * colorRange);
 
                 tb.Foreground = new SolidColorBrush(
                     Color.FromRgb(targetColor, targetColor, targetColor)
@@ -146,8 +146,8 @@ public partial class ScheduleWindow : Window
         Application.Current.Shutdown();
     }
 
-    internal void PlayVideo(string videoPath)
+    public void SetWebViewVisibility(bool visible)
     {
-
+        MainWebView.Visibility = visible ? Visibility.Visible : Visibility.Hidden;
     }
 }

@@ -48,8 +48,21 @@ public partial class MainWindow : Window
             };
             toolStripMenuItem_NextWallpaper.Click += (_, _) => NextWallPaper();
 
+            var toolStripMenuItem_ShowWebBrowser = new System.Windows.Forms.ToolStripMenuItem()
+            {
+                Text = "显示背景浏览器",
+                CheckOnClick = true,
+                CheckState = System.Windows.Forms.CheckState.Unchecked,
+            };
+            toolStripMenuItem_ShowWebBrowser.CheckedChanged += (_, _) =>
+            {
+                Instances.ScheduleWindow!.SetWebViewVisibility(
+                    toolStripMenuItem_ShowWebBrowser.Checked
+                );
+            };
 
             var contextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+            contextMenuStrip.Items.Add(toolStripMenuItem_ShowWebBrowser);
             contextMenuStrip.Items.Add(toolStripMenuItem_NextWallpaper);
             contextMenuStrip.Items.Add(toolStripMenuItem_Quit);
 
@@ -73,7 +86,7 @@ public partial class MainWindow : Window
 
         wallPaperTimer = new()
         {
-            Interval = 1 * 60 * 1000
+            Interval = 5 * 60 * 1000
         };
         wallPaperTimer.Elapsed += (_, _) => NextWallPaper();
         wallPaperTimer.Start();

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         Title="DeskWindow"
         Width="1920"
         Height="1080"
@@ -14,114 +15,115 @@
         WindowStyle="None"
         ShowInTaskbar="False"
         mc:Ignorable="d">
-    <Grid Margin="20">
-        <MediaElement x:Name="MainMediaElement" Visibility="Hidden"/>
-        <StackPanel HorizontalAlignment="Right"
+    <Grid>
+        <wv2:WebView2 x:Name="MainWebView" Visibility="Hidden" Source="https://www.google.com"/>
+        <Grid Margin="20">
+            <StackPanel HorizontalAlignment="Right"
                     VerticalAlignment="Top">
-            <Grid x:Name="Container_DateTime">
-                <Border Background="Black"
+                <Grid x:Name="Container_DateTime">
+                    <Border Background="Black"
                         Opacity="0.3"
                         CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
                                           Direction="305"
                                           ShadowDepth="5" 
                                           Opacity="0.7" 
                                           BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel Margin="20">
-                    <TextBlock x:Name="TextBlock_Time"
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel Margin="20">
+                        <TextBlock x:Name="TextBlock_Time"
                            Text="10:27"
                            FontSize="96"
                            FontWeight="Bold"
                            HorizontalAlignment="Center"
                            Foreground="White"/>
-                    <Border Height="10"/>
-                    <StackPanel Orientation="Horizontal"
+                        <Border Height="10"/>
+                        <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center">
-                        <TextBlock x:Name="TextBlock_Date"
+                            <TextBlock x:Name="TextBlock_Date"
                                Text="09 月 10 日"
                                FontSize="36"
                                HorizontalAlignment="Center"
                                Foreground="White"/>
-                        <Border Width="20"/>
-                        <TextBlock x:Name="TextBlock_WeekDay"
+                            <Border Width="20"/>
+                            <TextBlock x:Name="TextBlock_WeekDay"
                                Text="星期一"
                                FontSize="36"
                                HorizontalAlignment="Center"
                                Foreground="White"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </Grid>
-            <Border Height="20"/>
-            <Grid>
-                <Border Background="Black"
+                </Grid>
+                <Border Height="20"/>
+                <Grid>
+                    <Border Background="Black"
                         Opacity="0.3"
                         CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
                                           Direction="305"
                                           ShadowDepth="5" 
                                           Opacity="0.7" 
                                           BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel Orientation="Horizontal"
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel Orientation="Horizontal"
                             Margin="20">
-                    <TextBlock VerticalAlignment="Center"
+                        <TextBlock VerticalAlignment="Center"
                                FontSize="40"
                                Foreground="White"
                                FontFamily="Microsoft YaHei"
                                Text="距高考还有 "/>
-                    <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Center"
+                        <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Center"
                                FontSize="40"
                                FontWeight="Bold"
                                FontFamily="Microsoft YaHei"
                                Foreground="#FFFF5E5E"
                                Text="233"/>
-                    <TextBlock VerticalAlignment="Center"
+                        <TextBlock VerticalAlignment="Center"
                                FontSize="40"
                                Foreground="White"
                                FontFamily="Microsoft YaHei"
                                Text=" 天"/>
-                </StackPanel>
-            </Grid>
-            <Border Height="20"/>
-            <Grid>
-                <Border Background="Black"
+                    </StackPanel>
+                </Grid>
+                <Border Height="20"/>
+                <Grid>
+                    <Border Background="Black"
                         Opacity="0.3"
                         CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
                                           Direction="305"
                                           ShadowDepth="5" 
                                           Opacity="0.7" 
                                           BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <WrapPanel x:Name="WrapPanel_ClassesContainer" Margin="20" HorizontalAlignment="Center"
+                        </Border.Effect>
+                    </Border>
+                    <WrapPanel x:Name="WrapPanel_ClassesContainer" Margin="20" HorizontalAlignment="Center"
                            Orientation="Horizontal" MaxWidth="330"/>
-                <!--<TextBlock x:Name="TextBlock_ClassesList" Text="语语语语语语语语语语" Foreground="White" FontSize="32"
+                    <!--<TextBlock x:Name="TextBlock_ClassesList" Text="语语语语语语语语语语" Foreground="White" FontSize="32"
                            HorizontalAlignment="Center" Margin="20"/>-->
-            </Grid>
-            <Border Height="20"/>
-            <Grid x:Name="Container_ClassProgress">
-                <Border Background="Black"
+                </Grid>
+                <Border Height="20"/>
+                <Grid x:Name="Container_ClassProgress">
+                    <Border Background="Black"
                         Opacity="0.3"
                         CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
                                           Direction="305"
                                           ShadowDepth="5" 
                                           Opacity="0.7" 
                                           BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <TextBlock x:Name="TextBlock_ClassesProgress" Text="10%" Foreground="White" FontSize="36"
+                        </Border.Effect>
+                    </Border>
+                    <TextBlock x:Name="TextBlock_ClassesProgress" Text="10%" Foreground="White" FontSize="36"
                            HorizontalAlignment="Right" Margin="20"/>
-            </Grid>
-            <!--<Grid>
+                </Grid>
+                <!--<Grid>
                 <Border Background="Black"
                         Opacity="0.3"
                         CornerRadius="15">
@@ -147,6 +149,7 @@
                             Click="Button_QuitApp_Click"/>
                 </StackPanel>
             </Grid>-->
-        </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>
