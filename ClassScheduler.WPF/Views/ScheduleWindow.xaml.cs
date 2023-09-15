@@ -12,6 +12,8 @@ public partial class ScheduleWindow : Window
 {
     private readonly Timer _timer;
 
+    private double? classProgress;
+
     public ScheduleWindow()
     {
         InitializeComponent();
@@ -64,10 +66,11 @@ public partial class ScheduleWindow : Window
 
     private void RefreshClasses()
     {
-        StackPanel_ClassesContainer.Children.Clear();
+        WrapPanel_ClassesContainer.Children.Clear();
 
         Instances.Classes!.Sort();
 
+        var inClass = false;
         var passedClassesIndex = 0;
         var totalPassesClassesCount = Instances.Classes!.ClassesList.Where(
             x => x.EndTime < DateTime.Now && x.DayOfWeek == (int)DateTime.Now.DayOfWeek
@@ -89,7 +92,13 @@ public partial class ScheduleWindow : Window
             var end = DateTime.Parse(classModel.EndTime?.ToString("HH:mm")!);
 
             if (now >= begin && now <= end)
+            {
+                inClass = true;
+
+                classProgress = (now - begin).TotalSeconds / (end - begin).TotalSeconds * 100;
+
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0x5E, 0x5E));
+            }
             else if (now >= end)
             {
                 ++passedClassesIndex;
@@ -105,7 +114,21 @@ public partial class ScheduleWindow : Window
             else if (now >= (begin - new TimeSpan(0, 2, 0)) && now < begin)
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x03, 0xFC, 0xA5));
 
-            StackPanel_ClassesContainer.Children.Add(tb);
+            //9dd1a8
+
+            WrapPanel_ClassesContainer.Children.Add(tb);
+        }
+
+        classProgress = inClass ? classProgress : null;
+
+        if (classProgress is null)
+        {
+            Container_ClassProgress.Visibility = Visibility.Hidden;
+        }
+        else
+        {
+            Container_ClassProgress.Visibility = Visibility.Visible;
+            TextBlock_ClassesProgress.Text = $"{classProgress:f2} %";
         }
     }
 
