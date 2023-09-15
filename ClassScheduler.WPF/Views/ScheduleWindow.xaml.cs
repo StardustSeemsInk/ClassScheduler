@@ -91,6 +91,7 @@ public partial class ScheduleWindow : Window
             var begin = DateTime.Parse(classModel.BeginTime?.ToString("HH:mm")!);
             var end = DateTime.Parse(classModel.EndTime?.ToString("HH:mm")!);
 
+            // 正在上的课
             if (now >= begin && now <= end)
             {
                 inClass = true;
@@ -99,6 +100,7 @@ public partial class ScheduleWindow : Window
 
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0x5E, 0x5E));
             }
+            // 已完成的课
             else if (now >= end)
             {
                 ++passedClassesIndex;
@@ -111,10 +113,12 @@ public partial class ScheduleWindow : Window
                     Color.FromRgb(targetColor, targetColor, targetColor)
                 );
             }
+            // 打了预备铃
             else if (now >= (begin - new TimeSpan(0, 2, 0)) && now < begin)
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x03, 0xFC, 0xA5));
-
-            //9dd1a8
+            // 课件, 即将打预备铃
+            else if (now >= (begin - new TimeSpan(0, 10, 0)) && now < begin)
+                tb.Foreground = new SolidColorBrush(Color.FromRgb(0x8C, 0xC6, 0xED));
 
             WrapPanel_ClassesContainer.Children.Add(tb);
         }
