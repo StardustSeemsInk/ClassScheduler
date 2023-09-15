@@ -12,10 +12,14 @@ internal static class Instances
         if (!Directory.Exists(Path.GetFullPath("./Data/")))
             Directory.CreateDirectory(Path.GetFullPath("./Data/"));
 
-        Classes = "./Data/Classes.json".Load();
+        AppConfig = "./Data/AppConfig.json".LoadAsAppConfig();
+        AppConfig ??= new();
+        AppConfig.Save();
+
+        Classes = "./Data/Classes.json".LoadAsClasses();
         Classes ??= new();
         Classes.Sort();
-        Classes.Save("./Data/Classes.json");
+        Classes.Save();
 
         MainWindow = new();
 
@@ -29,6 +33,8 @@ internal static class Instances
     internal static ScheduleWindow? ScheduleWindow { get; set; }
 
     internal static Controller? Controller { get; set; }
+
+    internal static AppConfig? AppConfig { get; set; }
 
     internal static Classes? Classes { get; set; }
 

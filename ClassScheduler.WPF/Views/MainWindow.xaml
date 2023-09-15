@@ -5,14 +5,14 @@
         xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="ClassScheduler.WPF"
-        Width="465"
+        Width="440"
         Height="600"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
     <Grid>
         <TabControl>
             <TabItem Header="课表管理">
-                <DockPanel HorizontalAlignment="Left" Margin="20" Width="400">
+                <DockPanel Margin="20">
                     <StackPanel DockPanel.Dock="Top">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="课堂名称: "/>
@@ -52,6 +52,23 @@
                         <Border Height="10"/>
                     </StackPanel>
                     <ListBox x:Name="ListBox_Classes" SelectionChanged="ListBox_Classes_SelectionChanged"/>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="壁纸设置">
+                <DockPanel Margin="20">
+                    <StackPanel DockPanel.Dock="Top">
+                        <DockPanel>
+                            <TextBlock Text="壁纸文件夹路径" DockPanel.Dock="Left" Margin="0,0,10,0"
+                                       VerticalAlignment="Center"/>
+                            <Button x:Name="Button_SetWallPapersPath" DockPanel.Dock="Right"
+                                    Content="..." Margin="10,0,0,0" Click="Button_SetWallPapersPath_Click"/>
+                            <TextBox x:Name="TextBox_WallPapersPath" IsReadOnly="True"/>
+                        </DockPanel>
+                        <Border Height="10"/>
+                        <Button x:Name="Button_Refresh" Content="刷新" Click="Button_Refresh_Click"/>
+                    </StackPanel>
+                    <Border Height="10" DockPanel.Dock="Top"/>
+                    <ListBox x:Name="ListBox_WallPapers"/>
                 </DockPanel>
             </TabItem>
         </TabControl>

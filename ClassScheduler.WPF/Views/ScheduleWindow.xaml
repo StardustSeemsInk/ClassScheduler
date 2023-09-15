@@ -15,6 +15,7 @@
         ShowInTaskbar="False"
         mc:Ignorable="d">
     <Grid Margin="20">
+        <MediaElement x:Name="MainMediaElement" Visibility="Hidden"/>
         <StackPanel HorizontalAlignment="Right"
                     VerticalAlignment="Top">
             <Grid x:Name="Container_DateTime">

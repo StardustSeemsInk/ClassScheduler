@@ -40,7 +40,7 @@ public static class ClassesExtensions
 {
     public static void Save(
         this Classes classes,
-        string path,
+        string path = "./Data/Classes.json",
         Action<JsonSerializerOptions>? optionsProcessor = null)
     {
         var options = new JsonSerializerOptions()
@@ -50,11 +50,11 @@ public static class ClassesExtensions
         };
         optionsProcessor?.Invoke(options);
 
-        var json = JsonSerializer.Serialize(classes);
+        var json = JsonSerializer.Serialize(classes, options);
         File.WriteAllText(path, json);
     }
 
-    public static Classes? Load(
+    public static Classes? LoadAsClasses(
         this string path,
         Action<JsonSerializerOptions>? optionsProcessor = null)
     {
@@ -64,7 +64,7 @@ public static class ClassesExtensions
         optionsProcessor?.Invoke(options);
 
         var json = File.ReadAllText(path);
-        var classes = JsonSerializer.Deserialize<Classes>(json);
+        var classes = JsonSerializer.Deserialize<Classes>(json, options);
 
         return classes;
     }

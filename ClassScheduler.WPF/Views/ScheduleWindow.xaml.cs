@@ -10,7 +10,7 @@ namespace ClassScheduler.WPF.Views;
 
 public partial class ScheduleWindow : Window
 {
-    private readonly Timer _timer;
+    private readonly Timer mainTimer;
 
     private double? classProgress;
 
@@ -22,19 +22,19 @@ public partial class ScheduleWindow : Window
 
         UpdateDatas();
 
-        _timer = new Timer()
+        mainTimer = new Timer()
         {
             Interval = 5 * 1000,
         };
 
-        _timer.Elapsed += (_, _) =>
+        mainTimer.Elapsed += (_, _) =>
         {
             Dispatcher.Invoke(new(() =>
             {
                 UpdateDatas();
             }));
         };
-        _timer.Start();
+        mainTimer.Start();
     }
 
     private void ScheduleWindow_Loaded(object sender, RoutedEventArgs e)
@@ -105,9 +105,9 @@ public partial class ScheduleWindow : Window
             {
                 ++passedClassesIndex;
 
-                var originColor = 140;
-                var colorRange = 60;
-                var targetColor = (byte)(originColor + (passedClassesIndex / totalPassesClassesCount) * colorRange);
+                var originColor = 180;
+                var colorRange = 50;
+                var targetColor = (byte)(originColor + ((passedClassesIndex / totalPassesClassesCount) - 1) * colorRange);
 
                 tb.Foreground = new SolidColorBrush(
                     Color.FromRgb(targetColor, targetColor, targetColor)
@@ -116,7 +116,7 @@ public partial class ScheduleWindow : Window
             // 打了预备铃
             else if (now >= (begin - new TimeSpan(0, 2, 0)) && now < begin)
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x03, 0xFC, 0xA5));
-            // 课件, 即将打预备铃
+            // 课间, 即将打预备铃
             else if (now >= (begin - new TimeSpan(0, 10, 0)) && now < begin)
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x8C, 0xC6, 0xED));
 
@@ -144,5 +144,10 @@ public partial class ScheduleWindow : Window
     private void Button_QuitApp_Click(object sender, RoutedEventArgs e)
     {
         Application.Current.Shutdown();
+    }
+
+    internal void PlayVideo(string videoPath)
+    {
+
     }
 }

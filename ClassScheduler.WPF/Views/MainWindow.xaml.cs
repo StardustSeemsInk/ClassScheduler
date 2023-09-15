@@ -1,7 +1,10 @@
 ﻿using ClassScheduler.WPF.Data;
 using ClassScheduler.WPF.Models;
+using ClassScheduler.WPF.Utils;
 using System;
 using System.ComponentModel;
+using System.IO;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -10,6 +13,8 @@ namespace ClassScheduler.WPF.Views;
 
 public partial class MainWindow : Window
 {
+    private readonly Timer wallPaperTimer;
+
     public ScheduleWindow? deskWindow = null;
 
     public MainWindow()
@@ -37,7 +42,15 @@ public partial class MainWindow : Window
                 Exit();
             };
 
+            var toolStripMenuItem_NextWallpaper = new System.Windows.Forms.ToolStripMenuItem()
+            {
+                Text = "下一张壁纸",
+            };
+            toolStripMenuItem_NextWallpaper.Click += (_, _) => NextWallPaper();
+
+
             var contextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
+            contextMenuStrip.Items.Add(toolStripMenuItem_NextWallpaper);
             contextMenuStrip.Items.Add(toolStripMenuItem_Quit);
 
             Instances.NotifyIcon = new System.Windows.Forms.NotifyIcon()
@@ -57,6 +70,13 @@ public partial class MainWindow : Window
         };
 
         Loaded += MainWindow_Loaded;
+
+        wallPaperTimer = new()
+        {
+            Interval = 1 * 60 * 1000
+        };
+        wallPaperTimer.Elapsed += (_, _) => NextWallPaper();
+        wallPaperTimer.Start();
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -74,6 +94,8 @@ public partial class MainWindow : Window
         ComplexHide();
 
         RefreshClasses();
+
+        NextWallPaper();
     }
 
     public void ComplexShow()
@@ -119,14 +141,14 @@ public partial class MainWindow : Window
 
             Instances.Classes!.ClassesList.Add(classVar);
             Instances.Classes!.Sort();
-            Instances.Classes!.Save("./Data/Classes.json");
+            Instances.Classes!.Save();
 
             RefreshClasses();
         }
         catch (Exception ex)
         {
             MessageBox.Show(
-                $"{ex.Message}\n{ex.StackTrace}", 
+                $"{ex.Message}\n{ex.StackTrace}",
                 "Error",
                 MessageBoxButton.OK,
                 MessageBoxImage.Error
@@ -166,7 +188,7 @@ public partial class MainWindow : Window
             textBlock.MouseRightButtonDown += (_, _) =>
             {
                 Instances.Classes.ClassesList.RemoveAt(currentIndex);
-                Instances.Classes.Save("./Data/Classes.json");
+                Instances.Classes.Save();
                 RefreshClasses();
             };
 
@@ -186,5 +208,70 @@ public partial class MainWindow : Window
         TextBox_WeekDay.Text = selection.DayOfWeek.ToString();
         DatePicker_BeginTime.Text = selection.BeginTime?.ToString("HH:mm");
         DatePicker_EndTime.Text = selection.EndTime?.ToString("HH:mm");
+    }
+
+    private void RefreshWallpapers()
+    {
+        if (Instances.AppConfig!.WallPaperSettings.WallPapersPath is null) return;
+
+        ListBox_WallPapers.Items.Clear();
+
+        var path = Instances.AppConfig!.WallPaperSettings.WallPapersPath;
+        path = Path.GetFullPath(path);
+
+        TextBox_WallPapersPath.Text = path;
+
+        var dirInfo = new DirectoryInfo(path);
+        foreach (var file in dirInfo.GetFiles())
+        {
+            ListBox_WallPapers.Items.Add(Path.GetFileName(file.FullName));
+        }
+    }
+
+    private void Button_SetWallPapersPath_Click(object sender, RoutedEventArgs e)
+    {
+        using var dialog = new System.Windows.Forms.FolderBrowserDialog();
+        System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+
+        if (dialog.SelectedPath is not null && Directory.Exists(dialog.SelectedPath))
+        {
+            Instances.AppConfig!.WallPaperSettings.WallPapersPath = dialog.SelectedPath;
+            Instances.AppConfig!.Save();
+
+            RefreshWallpapers();
+        }
+    }
+
+    private void Button_Refresh_Click(object sender, RoutedEventArgs e) => RefreshWallpapers();
+
+    private void NextWallPaper()
+    {
+        var index = Instances.AppConfig!.WallPaperSettings.CurrentWallPaperIndex + 1;
+        var path = Instances.AppConfig!.WallPaperSettings.WallPapersPath;
+
+        if (path is null) return;
+
+        var wallPapers = new DirectoryInfo(path).GetFiles();
+        var count = wallPapers.Length;
+
+        if (index >= count)
+            index = 0;
+
+        try
+        {
+            wallPapers[index].FullName.SetWallPaper(WallPaperStyle.Centered);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                $"{ex.Message}\n{ex.StackTrace}",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error
+            );
+        }
+
+        Instances.AppConfig!.WallPaperSettings.CurrentWallPaperIndex = index;
+        Instances.AppConfig!.Save();
     }
 }
