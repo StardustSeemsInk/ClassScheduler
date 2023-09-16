@@ -32,54 +32,7 @@ public partial class MainWindow : Window
 
             Icon = icon;
 
-            var toolStripMenuItem_Quit = new System.Windows.Forms.ToolStripMenuItem()
-            {
-                Text = "退出",
-            };
-            toolStripMenuItem_Quit.Click += (_, _) =>
-            {
-                Instances.NotifyIcon!.Dispose();
-                Exit();
-            };
-
-            var toolStripMenuItem_NextWallpaper = new System.Windows.Forms.ToolStripMenuItem()
-            {
-                Text = "下一张壁纸",
-            };
-            toolStripMenuItem_NextWallpaper.Click += (_, _) => NextWallPaper();
-
-            var toolStripMenuItem_ShowWebBrowser = new System.Windows.Forms.ToolStripMenuItem()
-            {
-                Text = "显示背景浏览器",
-                CheckOnClick = true,
-                CheckState = System.Windows.Forms.CheckState.Unchecked,
-            };
-            toolStripMenuItem_ShowWebBrowser.CheckedChanged += (_, _) =>
-            {
-                Instances.ScheduleWindow!.SetWebViewVisibility(
-                    toolStripMenuItem_ShowWebBrowser.Checked
-                );
-            };
-
-            var contextMenuStrip = new System.Windows.Forms.ContextMenuStrip();
-            contextMenuStrip.Items.Add(toolStripMenuItem_ShowWebBrowser);
-            contextMenuStrip.Items.Add(toolStripMenuItem_NextWallpaper);
-            contextMenuStrip.Items.Add(toolStripMenuItem_Quit);
-
-            Instances.NotifyIcon = new System.Windows.Forms.NotifyIcon()
-            {
-                Icon = new System.Drawing.Icon($"{GlobalData.RootPath}/Assets/icon.ico"),
-                Visible = true,
-                Text = "ClassScheduler",
-                ContextMenuStrip = contextMenuStrip,
-            };
-            Instances.NotifyIcon.MouseClick += (_, e) =>
-            {
-                if (e.Button != System.Windows.Forms.MouseButtons.Left)
-                    return;
-
-                ComplexShow();
-            };
+            NotifyIconManager.BuildNotifyIcon();
         };
 
         Loaded += MainWindow_Loaded;
@@ -107,6 +60,8 @@ public partial class MainWindow : Window
         ComplexHide();
 
         RefreshClasses();
+
+        RefreshCurrentWallpaperStyle();
 
         NextWallPaper();
     }
@@ -257,7 +212,7 @@ public partial class MainWindow : Window
 
     private void Button_Refresh_Click(object sender, RoutedEventArgs e) => RefreshWallpapers();
 
-    private void NextWallPaper()
+    internal void NextWallPaper()
     {
         var index = Instances.AppConfig!.WallPaperSettings.CurrentWallPaperIndex + 1;
         var path = Instances.AppConfig!.WallPaperSettings.WallPapersPath;
@@ -272,7 +227,9 @@ public partial class MainWindow : Window
 
         try
         {
-            wallPapers[index].FullName.SetWallPaper(WallPaperStyle.Centered);
+            wallPapers[index].FullName.SetWallPaper(
+                Instances.AppConfig.WallPaperSettings.WallPaperStyle ?? WallPaperStyle.Stretched
+            );
         }
         catch (Exception ex)
         {
@@ -286,5 +243,49 @@ public partial class MainWindow : Window
 
         Instances.AppConfig!.WallPaperSettings.CurrentWallPaperIndex = index;
         Instances.AppConfig!.Save();
+    }
+
+    private void RefreshCurrentWallpaperStyle()
+    {
+        var text = "";
+
+        switch (Instances.AppConfig!.WallPaperSettings.WallPaperStyle)
+        {
+            case WallPaperStyle.Tiled:
+                text = "平铺";
+                break;
+            case WallPaperStyle.Centered:
+                text = "居中";
+                break;
+            case WallPaperStyle.Stretched:
+                text = "拉伸";
+                break;
+        }
+
+        TextBox_CurrentWallpaperStyle.Text = text;
+    }
+
+    private void Button_SetWallpaperTiled_Click(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WallPaperSettings.WallPaperStyle = WallPaperStyle.Tiled;
+        Instances.AppConfig!.Save();
+
+        RefreshCurrentWallpaperStyle();
+    }
+
+    private void Button_SetWallpaperCentered_Click(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WallPaperSettings.WallPaperStyle = WallPaperStyle.Centered;
+        Instances.AppConfig!.Save();
+
+        RefreshCurrentWallpaperStyle();
+    }
+
+    private void Button_SetWallpaperStretched_Click(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WallPaperSettings.WallPaperStyle = WallPaperStyle.Stretched;
+        Instances.AppConfig!.Save();
+
+        RefreshCurrentWallpaperStyle();
     }
 }

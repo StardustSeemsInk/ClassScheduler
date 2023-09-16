@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClassScheduler.WPF.Utils;
+using System;
 using System.IO;
 using System.Text.Json;
 
@@ -16,6 +17,8 @@ public class WallPaperSettings
     public int CurrentWallPaperIndex { get; set; } = 0;
 
     public bool? WallPapersEnabled { get; set; } = false;
+
+    public WallPaperStyle? WallPaperStyle { get; set; } = Utils.WallPaperStyle.Stretched;
 }
 
 public static class AppConfigExtensions

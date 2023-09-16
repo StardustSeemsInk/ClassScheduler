@@ -66,6 +66,14 @@
                         </DockPanel>
                         <Border Height="10"/>
                         <Button x:Name="Button_Refresh" Content="刷新" Click="Button_Refresh_Click"/>
+                        <Border Height="10"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="样式" VerticalAlignment="Center"/>
+                            <TextBox x:Name="TextBox_CurrentWallpaperStyle" Margin="10,0" Text="拉伸" IsReadOnly="True"/>
+                            <Button x:Name="Button_SetWallpaperTiled" Margin="10,0" Content="平铺" Click="Button_SetWallpaperTiled_Click"/>
+                            <Button x:Name="Button_SetWallpaperCentered" Margin="10,0" Content="居中" Click="Button_SetWallpaperCentered_Click"/>
+                            <Button x:Name="Button_SetWallpaperStretched" Margin="10,0" Content="拉伸" Click="Button_SetWallpaperStretched_Click"/>
+                        </StackPanel>
                     </StackPanel>
                     <Border Height="10" DockPanel.Dock="Top"/>
                     <ListBox x:Name="ListBox_WallPapers"/>

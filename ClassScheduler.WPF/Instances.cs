@@ -25,12 +25,17 @@ internal static class Instances
 
         ScheduleWindow = new();
 
+        TopmostEffectsWindow = new();
+        TopmostEffectsWindow.Show();
+
         Controller = new();
     }
 
     internal static MainWindow? MainWindow { get; set; }
 
     internal static ScheduleWindow? ScheduleWindow { get; set; }
+
+    internal static TopmostEffectsWindow? TopmostEffectsWindow { get; set; }
 
     internal static Controller? Controller { get; set; }
 

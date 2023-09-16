@@ -140,7 +140,14 @@ public partial class ScheduleWindow : Window
             }
             // 打了预备铃
             else if (now >= (begin - new TimeSpan(0, 2, 0)) && now < begin)
+            {
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x03, 0xFC, 0xA5));
+
+                if ((now - (begin - new TimeSpan(0, 2, 0))).TotalSeconds <= 6)
+                {
+                    Instances.TopmostEffectsWindow!.PlayPrepareClassAlert();
+                }
+            }
             // 课间, 即将打预备铃
             else if (now >= (begin - new TimeSpan(0, 10, 0)) && now < begin)
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x8C, 0xC6, 0xED));
@@ -187,5 +194,17 @@ public partial class ScheduleWindow : Window
     private void Animation_ScrollInClassBegin_Completed(object sender, EventArgs e)
     {
         Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+    }
+
+    internal void PlayClassBeginAnimation()
+    {
+        isPlayingClassBeginAnimation = true;
+        (Resources["Storyboard_ClassBegin"] as Storyboard)!.Begin();
+    }
+
+    internal void PlayClassOverAnimation()
+    {
+        isPlayingClassOverAnimation = true;
+        (Resources["Storyboard_ClassOver"] as Storyboard)?.Begin();
     }
 }
