@@ -188,12 +188,40 @@ public partial class ScheduleWindow : Window
 
     private void Animation_ScrollInClassOver_Completed(object sender, EventArgs e)
     {
-        Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+        switch (Container_ClassOverAnimation.HorizontalAlignment)
+        {
+            case HorizontalAlignment.Left:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+                break;
+            case HorizontalAlignment.Center:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Stretch;
+                break;
+            case HorizontalAlignment.Right:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Left;
+                break;
+            case HorizontalAlignment.Stretch:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Center;
+                break;
+        }
     }
 
     private void Animation_ScrollInClassBegin_Completed(object sender, EventArgs e)
     {
-        Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+        switch (Container_ClassBeginAnimation.HorizontalAlignment)
+        {
+            case HorizontalAlignment.Left:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+                break;
+            case HorizontalAlignment.Center:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Stretch;
+                break;
+            case HorizontalAlignment.Right:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Left;
+                break;
+            case HorizontalAlignment.Stretch:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Center;
+                break;
+        }
     }
 
     internal void PlayClassBeginAnimation()

@@ -39,7 +39,7 @@ public partial class MainWindow : Window
 
         wallPaperTimer = new()
         {
-            Interval = 5 * 60 * 1000
+            Interval = 10 * 60 * 1000
         };
         wallPaperTimer.Elapsed += (_, _) => NextWallPaper();
         wallPaperTimer.Start();
