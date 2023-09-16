@@ -15,6 +15,46 @@
         WindowStyle="None"
         ShowInTaskbar="False"
         mc:Ignorable="d">
+    <Window.Resources>
+        <Storyboard x:Key="Storyboard_ClassOver" FillBehavior="HoldEnd">
+            <DoubleAnimation x:Name="Animation_ScrollInClassOver"
+                             Storyboard.TargetName="Container_ClassOverAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="0" To="{Binding ElementName=Container_ClassProgress, Path=ActualWidth}"
+                             Duration="00:00:0.5" Completed="Animation_ScrollInClassOver_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_ClassOverAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="{Binding ElementName=Container_ClassProgress, Path=ActualWidth}" To="0"
+                             Duration="00:00:0.5" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="Storyboard_ClassBegin" FillBehavior="HoldEnd">
+            <DoubleAnimation x:Name="Animation_ScrollInClassBegin"
+                             Storyboard.TargetName="Container_ClassBeginAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="0" To="{Binding ElementName=Container_Classes, Path=ActualWidth}"
+                             Duration="00:00:0.5" Completed="Animation_ScrollInClassBegin_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_ClassBeginAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="{Binding ElementName=Container_Classes, Path=ActualWidth}" To="0"
+                             Duration="00:00:0.5" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+    </Window.Resources>
     <Grid>
         <wv2:WebView2 x:Name="MainWebView" Visibility="Hidden" Source="https://www.google.com"/>
         <Grid Margin="20">
@@ -90,7 +130,7 @@
                     </StackPanel>
                 </Grid>
                 <Border Height="20"/>
-                <Grid>
+                <Grid x:Name="Container_Classes">
                     <Border Background="Black"
                         Opacity="0.3"
                         CornerRadius="15">
@@ -104,8 +144,11 @@
                     </Border>
                     <WrapPanel x:Name="WrapPanel_ClassesContainer" Margin="20" HorizontalAlignment="Center"
                            Orientation="Horizontal" MaxWidth="330"/>
-                    <!--<TextBlock x:Name="TextBlock_ClassesList" Text="语语语语语语语语语语" Foreground="White" FontSize="32"
-                           HorizontalAlignment="Center" Margin="20"/>-->
+                    <Border x:Name="Container_ClassBeginAnimation" Background="#FFFF5E5E" CornerRadius="15"
+                            HorizontalAlignment="Left" Width="0">
+                        <TextBlock Text="到点啦" Foreground="White" FontSize="32" Margin="40,0,0,0"
+                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    </Border>
                 </Grid>
                 <Border Height="20"/>
                 <Grid x:Name="Container_ClassProgress">
@@ -120,35 +163,14 @@
                                           BlurRadius="15"/>
                         </Border.Effect>
                     </Border>
+                    <Border x:Name="Container_ClassOverAnimation" Background="#FF15CF7E" CornerRadius="15"
+                            HorizontalAlignment="Left" Width="0">
+                        <TextBlock Text="自由啦" Foreground="White" FontSize="40" Margin="40,0,0,0"
+                                   HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    </Border>
                     <TextBlock x:Name="TextBlock_ClassesProgress" Text="10%" Foreground="White" FontSize="36"
                            HorizontalAlignment="Right" Margin="20"/>
                 </Grid>
-                <!--<Grid>
-                <Border Background="Black"
-                        Opacity="0.3"
-                        CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                          Direction="305"
-                                          ShadowDepth="5" 
-                                          Opacity="0.7" 
-                                          BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel Orientation="Horizontal"
-                            Margin="20"
-                            HorizontalAlignment="Right">
-                    <Button x:Name="Button_OpenSettings"
-                            Content="⚙"
-                            FontSize="24"
-                            Click="Button_OpenSettings_Click"/>
-                    <Border Width="20"/>
-                    <Button x:Name="Button_QuitApp"
-                            Content="❎"
-                            FontSize="24"
-                            Click="Button_QuitApp_Click"/>
-                </StackPanel>
-            </Grid>-->
             </StackPanel>
         </Grid>
     </Grid>

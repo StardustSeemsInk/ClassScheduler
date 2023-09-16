@@ -5,6 +5,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace ClassScheduler.WPF.Views;
 
@@ -13,6 +14,8 @@ public partial class ScheduleWindow : Window
     private readonly Timer mainTimer;
 
     private double? classProgress;
+    private bool isPlayingClassOverAnimation = false;
+    private bool isPlayingClassBeginAnimation = false;
 
     public ScheduleWindow()
     {
@@ -43,6 +46,16 @@ public partial class ScheduleWindow : Window
         this.SetBottom();
 
         Left = 0; Top = 0;
+
+        (Resources["Storyboard_ClassOver"] as Storyboard)!.Completed += (_, _) =>
+        {
+            isPlayingClassOverAnimation = false;
+            Container_ClassProgress.Visibility = Visibility.Hidden;
+        };
+        (Resources["Storyboard_ClassBegin"] as Storyboard)!.Completed += (_, _) =>
+        {
+            isPlayingClassBeginAnimation = false;
+        };
     }
 
     public void UpdateDatas()
@@ -99,6 +112,12 @@ public partial class ScheduleWindow : Window
                 classProgress = (now - begin).TotalSeconds / (end - begin).TotalSeconds * 100;
 
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0x5E, 0x5E));
+
+                if ((now - begin).TotalSeconds <= 6 && !isPlayingClassBeginAnimation)
+                {
+                    isPlayingClassBeginAnimation = true;
+                    (Resources["Storyboard_ClassBegin"] as Storyboard)!.Begin();
+                }
             }
             // 已完成的课
             else if (now >= end)
@@ -112,6 +131,12 @@ public partial class ScheduleWindow : Window
                 tb.Foreground = new SolidColorBrush(
                     Color.FromRgb(targetColor, targetColor, targetColor)
                 );
+
+                if ((now - end).TotalSeconds <= 6 && !isPlayingClassOverAnimation)
+                {
+                    isPlayingClassOverAnimation = true;
+                    (Resources["Storyboard_ClassOver"] as Storyboard)?.Begin();
+                }
             }
             // 打了预备铃
             else if (now >= (begin - new TimeSpan(0, 2, 0)) && now < begin)
@@ -125,7 +150,7 @@ public partial class ScheduleWindow : Window
 
         classProgress = inClass ? classProgress : null;
 
-        if (classProgress is null)
+        if (classProgress is null && isPlayingClassOverAnimation == false)
         {
             Container_ClassProgress.Visibility = Visibility.Hidden;
         }
@@ -133,6 +158,9 @@ public partial class ScheduleWindow : Window
         {
             Container_ClassProgress.Visibility = Visibility.Visible;
             TextBlock_ClassesProgress.Text = $"{classProgress:f2} %";
+
+            if (isPlayingClassOverAnimation)
+                TextBlock_ClassesProgress.Text = "";
         }
     }
 
@@ -149,5 +177,15 @@ public partial class ScheduleWindow : Window
     public void SetWebViewVisibility(bool visible)
     {
         MainWebView.Visibility = visible ? Visibility.Visible : Visibility.Hidden;
+    }
+
+    private void Animation_ScrollInClassOver_Completed(object sender, EventArgs e)
+    {
+        Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+    }
+
+    private void Animation_ScrollInClassBegin_Completed(object sender, EventArgs e)
+    {
+        Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Right;
     }
 }
