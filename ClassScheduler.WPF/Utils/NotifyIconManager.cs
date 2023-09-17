@@ -1,112 +1,95 @@
 ﻿using ClassScheduler.WPF.Data;
+using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace ClassScheduler.WPF.Utils;
 
 internal static class NotifyIconManager
 {
-    private static ToolStripMenuItem BuildItem_Quit()
+    private static ToolStripMenuItem BuildItem(
+        string text = "",
+        Action<object?, EventArgs>? onClick = null,
+        Action<object?, EventArgs>? onCheckChanged = null,
+        bool? checkOnClick = null,
+        CheckState? checkState = null,
+        List<ToolStripMenuItem>? subItems = null)
     {
-        var toolStripMenuItem_Quit = new ToolStripMenuItem()
+        var toolStripMenuItem = new ToolStripMenuItem()
         {
-            Text = "退出",
-        };
-        toolStripMenuItem_Quit.Click += (_, _) =>
-        {
-            Instances.NotifyIcon!.Dispose();
-            Instances.MainWindow!.Exit();
+            Text = text,
+            CheckOnClick = checkOnClick ?? false,
+            CheckState = checkState ?? CheckState.Unchecked,
         };
 
-        return toolStripMenuItem_Quit;
+        toolStripMenuItem.Click += (x, y) => onClick?.Invoke(x, y);
+        toolStripMenuItem.CheckedChanged += (x, y) => onCheckChanged?.Invoke(x, y);
+
+        if (subItems is not null)
+            foreach (var item in subItems)
+                toolStripMenuItem.DropDownItems.Add(item);
+
+        return toolStripMenuItem;
     }
 
-    private static ToolStripMenuItem BuildItem_NextWallpaper()
-    {
-        var toolStripMenuItem_NextWallpaper = new ToolStripMenuItem()
-        {
-            Text = "下一张壁纸",
-        };
-        toolStripMenuItem_NextWallpaper.Click += (_, _) => Instances.MainWindow!.NextWallPaper();
-
-        return toolStripMenuItem_NextWallpaper;
-    }
-
-    private static ToolStripMenuItem BuildItem_ShowWebBrowser()
-    {
-        var toolStripMenuItem_ShowWebBrowser = new ToolStripMenuItem()
-        {
-            Text = "显示背景浏览器",
-            CheckOnClick = true,
-            CheckState = CheckState.Unchecked,
-        };
-        toolStripMenuItem_ShowWebBrowser.CheckedChanged += (_, _) =>
-        {
-            Instances.ScheduleWindow!.SetWebViewVisibility(
-                toolStripMenuItem_ShowWebBrowser.Checked
-            );
-        };
-
-        return toolStripMenuItem_ShowWebBrowser;
-    }
-
-    private static ToolStripMenuItem BuildItem_PlayPrepareClassAlert()
-    {
-        var toolStripMenuItem_PlayPrepareClassAlert = new ToolStripMenuItem()
-        {
-            Text = "播放预备铃动画",
-        };
-        toolStripMenuItem_PlayPrepareClassAlert.Click += (_, _)
-            => Instances.TopmostEffectsWindow!.PlayPrepareClassAlert();
-
-        return toolStripMenuItem_PlayPrepareClassAlert;
-    }
-
-    private static ToolStripMenuItem BuildItem_PlayClassBeginAnimation()
-    {
-        var toolStripMenuItem_PlayClassBeginAnimation = new ToolStripMenuItem()
-        {
-            Text = "播放上课动画",
-        };
-        toolStripMenuItem_PlayClassBeginAnimation.Click += (_, _)
-            => Instances.ScheduleWindow!.PlayClassBeginAnimation();
-
-        return toolStripMenuItem_PlayClassBeginAnimation;
-    }
-
-    private static ToolStripMenuItem BuildItem_PlayClassOverAnimation()
-    {
-        var toolStripMenuItem_PlayClassOverAnimation = new ToolStripMenuItem()
-        {
-            Text = "播放下课动画",
-        };
-        toolStripMenuItem_PlayClassOverAnimation.Click += (_, _)
-            => Instances.ScheduleWindow!.PlayClassOverAnimation();
-
-        return toolStripMenuItem_PlayClassOverAnimation;
-    }
-
-    private static ToolStripMenuItem BuildContextMenu_Debug()
-    {
-        var toolStripMenuItem_Debug = new ToolStripMenuItem()
-        {
-            Text = "调试",
-        };
-        toolStripMenuItem_Debug.DropDownItems.Add(BuildItem_PlayPrepareClassAlert());
-        toolStripMenuItem_Debug.DropDownItems.Add(BuildItem_PlayClassBeginAnimation());
-        toolStripMenuItem_Debug.DropDownItems.Add(BuildItem_PlayClassOverAnimation());
-
-        return toolStripMenuItem_Debug;
-    }
-
-    private static ContextMenuStrip BuildContextMenu_Main()
+    private static ContextMenuStrip BuildContextMenu()
     {
         var contextMenuStrip = new ContextMenuStrip();
-        contextMenuStrip.Items.Add(BuildContextMenu_Debug());
+        contextMenuStrip.Items.Add(BuildItem(
+            "调试",
+            subItems: new()
+            {
+                BuildItem(
+                    "播放预备铃动画",
+                    onClick: (_, _) => Instances.TopmostEffectsWindow!.PlayPrepareClassAlert()
+                ),
+                BuildItem(
+                    "播放上课动画",
+                    onClick: (_, _) => Instances.ScheduleWindow!.PlayClassBeginAnimation()
+                ),
+                BuildItem(
+                    "播放下课动画",
+                    onClick: (_, _) => Instances.ScheduleWindow!.PlayClassOverAnimation()
+                )
+            }
+        ));
         contextMenuStrip.Items.Add(new ToolStripSeparator());
-        contextMenuStrip.Items.Add(BuildItem_ShowWebBrowser());
-        contextMenuStrip.Items.Add(BuildItem_NextWallpaper());
-        contextMenuStrip.Items.Add(BuildItem_Quit());
-
+        contextMenuStrip.Items.Add(BuildItem(
+            "浏览器",
+            subItems: new()
+            {
+                BuildItem(
+                    "显示背景浏览器",
+                    checkOnClick: true,
+                    onCheckChanged: (sender, _) =>
+                        Instances.ScheduleWindow!.SetWebViewVisibility(
+                            (sender as ToolStripMenuItem)!.Checked
+                        )
+                ),
+                BuildItem(
+                    "刷新网页",
+                    onClick: (_, _) => Instances.ScheduleWindow!.GetWebView().Reload()
+                )
+            }
+        ));
+        contextMenuStrip.Items.Add(BuildItem(
+            "壁纸",
+            subItems: new()
+            {
+                BuildItem(
+                    "下一张",
+                    onClick: (_, _) => Instances.MainWindow!.NextWallPaper()
+                )
+            }
+        ));
+        contextMenuStrip.Items.Add(BuildItem(
+            "退出",
+            onClick: (_, _) =>
+            {
+                Instances.NotifyIcon!.Dispose();
+                Instances.MainWindow!.Exit();
+            }
+        ));
         return contextMenuStrip;
     }
 
@@ -117,7 +100,7 @@ internal static class NotifyIconManager
             Icon = new System.Drawing.Icon($"{GlobalData.RootPath}/Assets/icon.ico"),
             Visible = true,
             Text = "ClassScheduler",
-            ContextMenuStrip = BuildContextMenu_Main(),
+            ContextMenuStrip = BuildContextMenu(),
         };
         Instances.NotifyIcon.MouseClick += (_, e) =>
         {

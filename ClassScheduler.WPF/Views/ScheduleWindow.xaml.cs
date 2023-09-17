@@ -1,5 +1,6 @@
 ﻿using ClassScheduler.WPF.Utils;
 using ClassScheduler.WPF.Utils.Converter;
+using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Linq;
 using System.Timers;
@@ -188,6 +189,8 @@ public partial class ScheduleWindow : Window
     {
         MainWebView.Visibility = visible ? Visibility.Visible : Visibility.Hidden;
     }
+
+    public WebView2 GetWebView() => MainWebView;
 
     private void Animation_ScrollInClassOver_Completed(object sender, EventArgs e)
     {
