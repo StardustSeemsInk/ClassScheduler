@@ -108,21 +108,28 @@ public partial class ScheduleWindow : Window
             var end = DateTime.Parse(classModel.EndTime?.ToString("HH:mm")!);
 
             // 不是已完成的课 用于显示当前课程的详细信息
-            if (now < end)
-            {
-                TextBlock_ClassName.Text = classModel.Name;
-                TextBlock_ClassDate.Text = now.Date.ToString("M");
-                TextBlock_ClassWeekDay.Text = now.DayOfWeek.ToString();
-                TextBlock_ClassTeacher.Text = classModel.Teacher?.Name;
-                TextBlock_ClassBeginTime.Text = classModel.BeginTime?.ToString("HH:mm");
-                TextBlock_ClassEndTime.Text = classModel.EndTime?.ToString("HH:mm");
-            }
+            //if (now < end)
+            //{
+            //    TextBlock_ClassName.Text = classModel.Name;
+            //    TextBlock_ClassDate.Text = now.Date.ToString("M");
+            //    TextBlock_ClassWeekDay.Text = now.DayOfWeek.ToString();
+            //    TextBlock_ClassTeacher.Text = classModel.Teacher?.Name;
+            //    TextBlock_ClassBeginTime.Text = classModel.BeginTime?.ToString("HH:mm");
+            //    TextBlock_ClassEndTime.Text = classModel.EndTime?.ToString("HH:mm");
+            //}
                 
 
             // 正在上的课
             if (now >= begin && now <= end)
             {
                 inClass = true;
+
+                TextBlock_ClassName.Text = classModel.Name;
+                TextBlock_ClassDate.Text = now.Date.ToString("M");
+                TextBlock_ClassWeekDay.Text = now.DayOfWeek.ToString();
+                TextBlock_ClassTeacher.Text = classModel.Teacher?.Name;
+                TextBlock_ClassBeginTime.Text = classModel.BeginTime?.ToString("HH:mm");
+                TextBlock_ClassEndTime.Text = classModel.EndTime?.ToString("HH:mm");
 
                 classProgress = (now - begin).TotalSeconds / (end - begin).TotalSeconds * 100;
 
@@ -181,6 +188,7 @@ public partial class ScheduleWindow : Window
             Container_ClassProgress.Opacity = 1;
             Container_ClassProgress.Visibility = Visibility.Visible;
             TextBlock_ClassesProgress.Text = $"{classProgress:f2} %";
+            
 
             if (isPlayingClassOverAnimation)
                 TextBlock_ClassesProgress.Text = "";
