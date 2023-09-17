@@ -1,4 +1,5 @@
 ﻿using ClassScheduler.WPF.Utils;
+using ClassScheduler.WPF.Utils.Converter;
 using System;
 using System.Linq;
 using System.Timers;
@@ -86,12 +87,12 @@ public partial class ScheduleWindow : Window
         var inClass = false;
         var passedClassesIndex = 0;
         var totalPassesClassesCount = Instances.Classes!.ClassesList.Where(
-            x => x.EndTime < DateTime.Now && x.DayOfWeek == (int)DateTime.Now.DayOfWeek
+            x => x.EndTime < DateTime.Now && x.DayOfWeek == DateTime.Now.DayOfWeek.ToInt()
         ).Count() * 1.0;
 
         foreach (var classModel in Instances.Classes!.ClassesList)
         {
-            if (classModel.DayOfWeek! != (int)DateTime.Now.DayOfWeek) continue;
+            if (classModel.DayOfWeek! != DateTime.Now.DayOfWeek.ToInt()) continue;
 
             var tb = new TextBlock()
             {
