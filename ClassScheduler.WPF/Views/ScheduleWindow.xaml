@@ -105,7 +105,7 @@
                     <StackPanel Margin="20">
                         <TextBlock x:Name="TextBlock_Time"
                                    Text="10:27"
-                                   FontSize="96"
+                                   FontSize="86"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"
                                    Foreground="White"/>
@@ -127,7 +127,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Border Height="20"/>
+                <Border Height="15"/>
 
                 <Grid>
                     <Border Background="Black"
@@ -163,7 +163,7 @@
                     </StackPanel>
                 </Grid>
 
-                <Border Height="20"/>
+                <Border Height="15"/>
 
                 <Grid x:Name="Container_Classes">
                     <Border Background="Black"
@@ -211,7 +211,7 @@
                     </Border>
                 </Grid>
 
-                <Border Height="20"/>
+                <Border Height="15"/>
 
                 <Grid x:Name="Container_ClassProgress">
                     <Border Background="Black"
@@ -257,6 +257,67 @@
                             </TextBlock>
                         </Border>
                     </Border>
+                </Grid>
+
+                <Border Height="15"/>
+
+                <Grid x:Name="Container_Information">
+                    <Border Background="Black"
+                            Opacity="0.3"
+                            CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="305"
+                                              ShadowDepth="5"
+                                              Opacity="0.7"
+                                              BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel Margin="20">
+                        <TextBlock x:Name="TextBlock_ClassName"
+                                   Text="口语"
+                                   FontSize="66"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"/>
+                        <Border Height="10"/>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBlock x:Name="TextBlock_ClassDate"
+                                       Text="09 月 10 日"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"/>
+                            <Border Width="20"/>
+                            <TextBlock x:Name="TextBlock_ClassWeekDay"
+                                       Text="星期一"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBlock x:Name="TextBlock_ClassBeginTime"
+                                       Text="16:00"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#FF15CF7E"/>
+                            <Border Width="20"/>
+                            <TextBlock x:Name="TextBlock_ClassEndTime"
+                                       Text="17:00"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#FFFF5E5E"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBlock x:Name="TextBlock_ClassTeacher"
+                                       Text="Lisa Fan"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"/>
+                        </StackPanel>
+                    </StackPanel>
                 </Grid>
 
             </StackPanel>

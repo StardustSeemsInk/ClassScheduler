@@ -107,6 +107,18 @@ public partial class ScheduleWindow : Window
             var begin = DateTime.Parse(classModel.BeginTime?.ToString("HH:mm")!);
             var end = DateTime.Parse(classModel.EndTime?.ToString("HH:mm")!);
 
+            // 不是已完成的课 用于显示当前课程的详细信息
+            if (now < end)
+            {
+                TextBlock_ClassName.Text = classModel.Name;
+                TextBlock_ClassDate.Text = now.Date.ToString("M");
+                TextBlock_ClassWeekDay.Text = now.DayOfWeek.ToString();
+                TextBlock_ClassTeacher.Text = classModel.Teacher?.Name;
+                TextBlock_ClassBeginTime.Text = classModel.BeginTime?.ToString("HH:mm");
+                TextBlock_ClassEndTime.Text = classModel.EndTime?.ToString("HH:mm");
+            }
+                
+
             // 正在上的课
             if (now >= begin && now <= end)
             {
