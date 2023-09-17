@@ -18,26 +18,6 @@
 
     <Window.Resources>
 
-        <Storyboard x:Key="Storyboard_ClassOver" FillBehavior="HoldEnd">
-            <DoubleAnimation x:Name="Animation_ScrollInClassOver"
-                             Storyboard.TargetName="Container_ClassOverAnimation"
-                             Storyboard.TargetProperty="Width"
-                             From="0" To="{Binding ActualWidth, ElementName=Container_ClassProgress}"
-                             Duration="00:00:0.5" Completed="Animation_ScrollInClassOver_Completed">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseInOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Storyboard.TargetName="Container_ClassOverAnimation"
-                             Storyboard.TargetProperty="Width"
-                             From="{Binding ActualWidth, ElementName=Container_ClassProgress}" To="0"
-                             Duration="00:00:0.5" BeginTime="00:00:01.8">
-                <DoubleAnimation.EasingFunction>
-                    <CubicEase EasingMode="EaseInOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-        </Storyboard>
-
         <Storyboard x:Key="Storyboard_ClassBegin" FillBehavior="HoldEnd">
             <DoubleAnimation x:Name="Animation_ScrollInClassBegin"
                              Storyboard.TargetName="Container_ClassBeginAnimation"
@@ -48,6 +28,7 @@
                     <CubicEase EasingMode="EaseInOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
+
             <DoubleAnimation Storyboard.TargetName="Container_ClassBeginAnimation"
                              Storyboard.TargetProperty="Width"
                              From="{Binding ActualWidth, ElementName=Container_Classes}" To="0"
@@ -56,6 +37,46 @@
                     <CubicEase EasingMode="EaseInOut"/>
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_ClassOver" FillBehavior="HoldEnd">
+            <DoubleAnimation Storyboard.TargetName="Container_ClassProgress"
+                             Storyboard.TargetProperty="Opacity"
+                             From="{Binding Opacity, ElementName=Container_ClassProgress}" To="1"
+                             Duration="00:00:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation x:Name="Animation_ScrollInClassOver"
+                             Storyboard.TargetName="Container_ClassOverAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="0" To="{Binding ActualWidth, ElementName=Container_ClassProgress}"
+                             Duration="00:00:0.5" Completed="Animation_ScrollInClassOver_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation Storyboard.TargetName="Container_ClassOverAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="{Binding ActualWidth, ElementName=Container_ClassProgress}" To="0"
+                             Duration="00:00:0.5" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_ClassProgress"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="00:00:0.4" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_ClassProgress"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="00:00:00" BeginTime="00:00:02.5"/>
         </Storyboard>
 
     </Window.Resources>

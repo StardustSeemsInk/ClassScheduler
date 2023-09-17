@@ -48,14 +48,15 @@ public partial class ScheduleWindow : Window
 
         Left = 0; Top = 0;
 
+        (Resources["Storyboard_ClassBegin"] as Storyboard)!.Completed += (_, _) =>
+        {
+            isPlayingClassBeginAnimation = false;
+        };
         (Resources["Storyboard_ClassOver"] as Storyboard)!.Completed += (_, _) =>
         {
             isPlayingClassOverAnimation = false;
             Container_ClassProgress.Visibility = Visibility.Hidden;
-        };
-        (Resources["Storyboard_ClassBegin"] as Storyboard)!.Completed += (_, _) =>
-        {
-            isPlayingClassBeginAnimation = false;
+            Container_ClassProgress.Opacity = 1;
         };
     }
 
@@ -158,12 +159,13 @@ public partial class ScheduleWindow : Window
 
         classProgress = inClass ? classProgress : null;
 
-        if (classProgress is null && isPlayingClassOverAnimation == false)
+        if (isPlayingClassOverAnimation == false && classProgress is null)
         {
             Container_ClassProgress.Visibility = Visibility.Hidden;
         }
         else
         {
+            Container_ClassProgress.Opacity = 1;
             Container_ClassProgress.Visibility = Visibility.Visible;
             TextBlock_ClassesProgress.Text = $"{classProgress:f2} %";
 
@@ -233,6 +235,9 @@ public partial class ScheduleWindow : Window
 
     internal void PlayClassOverAnimation()
     {
+        Container_ClassProgress.Opacity = 1;
+        Container_ClassProgress.Visibility = Visibility.Visible;
+
         isPlayingClassOverAnimation = true;
         (Resources["Storyboard_ClassOver"] as Storyboard)?.Begin();
     }
