@@ -55,6 +55,22 @@ internal static class NotifyIconManager
         ));
         contextMenuStrip.Items.Add(new ToolStripSeparator());
         contextMenuStrip.Items.Add(BuildItem(
+            "置顶窗口",
+            subItems: new()
+            {
+                BuildItem(
+                    "显示时钟",
+                    checkOnClick: true,
+                    checkState: (Instances.AppConfig!.TopmostEffectsSettings.IsDateTimeVisible ?? true)
+                        ? CheckState.Checked : CheckState.Unchecked,
+                    onCheckChanged: (sender, _) =>
+                        Instances.TopmostEffectsWindow!.SetDateTimeVisibility(
+                            (sender as ToolStripMenuItem)!.Checked
+                        )
+                ),
+            }
+        ));
+        contextMenuStrip.Items.Add(BuildItem(
             "浏览器",
             subItems: new()
             {
@@ -109,5 +125,11 @@ internal static class NotifyIconManager
 
             Instances.MainWindow!.ComplexShow();
         };
+    }
+
+    internal static void Rebuild()
+    {
+        Instances.NotifyIcon!.Dispose();
+        BuildNotifyIcon();
     }
 }

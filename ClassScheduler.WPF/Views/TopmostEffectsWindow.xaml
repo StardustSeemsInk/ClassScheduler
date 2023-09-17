@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
         mc:Ignorable="d"
         AllowsTransparency="True"
-        IsHitTestVisible="False"
         WindowStyle="None"
         WindowState="Maximized"
         Title="TopmostEffectsWindow"
@@ -14,6 +13,7 @@
         Topmost="True" ShowInTaskbar="False"
         Background="Transparent">
     <Window.Resources>
+
         <Storyboard x:Key="Storyboard_PrepareClassAlert">
             <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
                              Storyboard.TargetProperty="Width"
@@ -137,9 +137,77 @@
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
+
+        <Storyboard x:Key="Storyboard_LeftTopSlideIn" FillBehavior="HoldEnd">
+            <ThicknessAnimation Storyboard.TargetName="Container_LeftTop"
+                                Storyboard.TargetProperty="Margin"
+                                Duration="00:00:0.3"
+                                From="30,-100,30,30" To="30">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_LeftTopSlideOut" FillBehavior="HoldEnd">
+            <ThicknessAnimation Storyboard.TargetName="Container_LeftTop"
+                        Storyboard.TargetProperty="Margin"
+                        Duration="00:00:0.3"
+                        From="30" To="30,-100,30,30">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_DateTimeSlideIn" FillBehavior="HoldEnd">
+            <ThicknessAnimation Storyboard.TargetName="Container_DateTime"
+                                Storyboard.TargetProperty="Margin"
+                                Duration="00:00:0.3"
+                                From="0,-100,0,100" To="0">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_DateTimeSlideOut" FillBehavior="HoldEnd">
+            <ThicknessAnimation Storyboard.TargetName="Container_DateTime"
+                        Storyboard.TargetProperty="Margin"
+                        Duration="00:00:0.3"
+                        From="0" To="0,-100,0,100">
+                <ThicknessAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+        </Storyboard>
+
     </Window.Resources>
     <Grid>
         <Border x:Name="Container_Backmask" Background="Black" Opacity="0"/>
+        <Grid x:Name="Container_Root">
+            <Grid x:Name="Container_LeftTop" Margin="30"
+                  HorizontalAlignment="Left" VerticalAlignment="Top">
+                <StackPanel Orientation="Horizontal">
+                    <Grid x:Name="Container_DateTime" Margin="0,-100,0,100"
+                          MouseLeftButtonUp="Container_DateTime_MouseLeftButtonUp">
+                        <Border Background="#AA000000" CornerRadius="10" BorderBrush="#DDFFFFFF" BorderThickness="3">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black"
+                                                  Direction="305"
+                                                  ShadowDepth="5"
+                                                  Opacity="0.7"
+                                                  BlurRadius="15"/>
+                            </Border.Effect>
+                        </Border>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="TextBlock_DateTime" Text="14:67:46" FontFamily="Consolas"
+                                       Foreground="White" FontSize="28" Margin="25,10"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
         <Grid x:Name="Container_PrepareClassAlert">
             <Canvas>
                 <Ellipse x:Name="Ellipse_PrepareClassAlertBackground"
@@ -149,12 +217,6 @@
                            Text="!" FontSize="200" FontWeight="UltraBold" Foreground="White"
                            Canvas.Left="-100" Canvas.Top="-300" HorizontalAlignment="Left"/>
             </Canvas>
-        </Grid>
-        <Grid x:Name="Container_GlobalProgress">
-            <Grid HorizontalAlignment="Right" VerticalAlignment="Top"
-                  Margin="40">
-                <Border Background="White"></Border>
-            </Grid>
         </Grid>
     </Grid>
 </Window>

@@ -7,7 +7,14 @@ namespace ClassScheduler.WPF.Data;
 
 public class AppConfig
 {
+    public TopmostEffectsSettings TopmostEffectsSettings { get; set; } = new();
+
     public WallPaperSettings WallPaperSettings { get; set; } = new();
+}
+
+public class TopmostEffectsSettings
+{
+    public bool? IsDateTimeVisible { get; set; } = true;
 }
 
 public class WallPaperSettings
