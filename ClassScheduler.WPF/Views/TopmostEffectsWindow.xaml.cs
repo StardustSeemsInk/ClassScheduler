@@ -31,6 +31,8 @@ public partial class TopmostEffectsWindow : Window
     private bool dateTimeSlideInAnimationCompletedRegistered = false;
     private bool dateTimeSlideOutAnimationCompletedRegistered = false;
 
+    private FixedSizedQueue<Point> previousPoints_dateTime = new(6);
+
     public TopmostEffectsWindow()
     {
         InitializeComponent();
@@ -148,7 +150,7 @@ public partial class TopmostEffectsWindow : Window
 
         Container_DateTime.ReleaseMouseCapture();
 
-        SetDateTimeVisibility(true);
+        BeginDecreaseSpeedMovement();
     }
 
     private void Container_DateTime_MouseMove(object sender, MouseEventArgs e)
@@ -186,6 +188,86 @@ public partial class TopmostEffectsWindow : Window
 
             Canvas.SetLeft(Container_DateTime, x);
             Canvas.SetTop(Container_DateTime, y);
+
+            previousPoints_dateTime.Enqueue(new(x, y));
         }
+    }
+
+    private void BeginDecreaseSpeedMovement()
+    {
+        if (previousPoints_dateTime.Count < 6)
+            return;
+
+        var cx = Canvas.GetLeft(Container_DateTime);
+        var cy = Canvas.GetTop(Container_DateTime);
+
+        var W = Width;
+        var H = Height;
+        var w = Container_DateTime.ActualWidth;
+        var h = Container_DateTime.ActualHeight;
+
+        var m = 30.0;
+
+        var x = new double[6];
+        var y = new double[6];
+
+        var index = 0;
+
+        while (index <= 5)
+        {
+            if (previousPoints_dateTime.TryDequeue(out var point))
+            {
+                x[index] = point.X;
+                y[index] = point.Y;
+            }
+            ++index;
+        }
+
+        var vx = (x[5] - x[2] + x[4] - x[1] + x[3] - x[0]) / 3;
+        var vy = (y[5] - y[2] + y[4] - y[1] + y[3] - y[0]) / 3;
+
+        var af = 2.0;
+        var afx = Math.Sqrt((af * af) / (Math.Pow(vy / vx, 2) + 1));
+        var afy = afx * (vy / vx);
+
+        var ttx = vx / afx;
+        var tty = vy / afy;
+
+        Task.Run(async () =>
+        {
+            var ct = 0;
+
+            while (ct <= (ttx + tty) / 2)
+            {
+                ct += 1;
+                vx -= afx;
+                vy -= afy;
+
+                cx += vx;
+                cy += vy;
+
+                Dispatcher.Invoke(new(() =>
+                {
+                    Canvas.SetLeft(Container_DateTime, cx);
+                    Canvas.SetTop(Container_DateTime, cy);
+
+                    if (cx + w >= W - m || cx <= m)
+                    {
+                        vx = -vx;
+                        afx = -afx;
+                    }
+
+                    if (cy + h >= H - m || cy <= m)
+                    {
+                        vy = -vy;
+                        afy = -afy;
+                    }
+                }));
+
+                await Task.Delay(10);
+            }
+
+            Dispatcher.Invoke(new(() => SetDateTimeVisibility(true)));
+        });
     }
 }
