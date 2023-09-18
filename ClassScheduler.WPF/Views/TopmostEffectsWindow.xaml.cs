@@ -148,7 +148,7 @@ public partial class TopmostEffectsWindow : Window
 
         Container_DateTime.ReleaseMouseCapture();
 
-        //SetDateTimeVisibility(true);
+        SetDateTimeVisibility(true);
     }
 
     private void Container_DateTime_MouseMove(object sender, MouseEventArgs e)
