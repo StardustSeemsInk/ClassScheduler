@@ -233,11 +233,16 @@ public partial class TopmostEffectsWindow : Window
         var ttx = vx / afx;
         var tty = vy / afy;
 
+        ttx = ttx >= 0 ? ttx : ttx * -1;
+        tty = tty >= 0 ? tty : tty * -1;
+
+        var tt = (ttx + tty) / 2;
+
         Task.Run(async () =>
         {
             var ct = 0;
 
-            while (ct <= (ttx + tty) / 2)
+            while (ct <= tt)
             {
                 ct += 1;
                 vx -= afx;
