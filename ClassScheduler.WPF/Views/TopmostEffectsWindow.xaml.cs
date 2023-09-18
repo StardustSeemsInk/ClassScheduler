@@ -169,14 +169,23 @@ public partial class TopmostEffectsWindow : Window
             Canvas.SetTop(ellipse, currentPosition.Y);
 #endif
 
-            Canvas.SetLeft(
-                Container_DateTime,
-                currentPosition.X - clickPosition_DateTime.X
-            );
-            Canvas.SetTop(
-                Container_DateTime,
-                currentPosition.Y - clickPosition_DateTime.Y
-            );
+            var x = currentPosition.X - clickPosition_DateTime.X;
+            var y = currentPosition.Y - clickPosition_DateTime.Y;
+
+            var margin = 30;
+
+            if (x + Container_DateTime.ActualWidth >= Width - margin)
+                x = Width - Container_DateTime.ActualWidth - margin;
+
+            if (x <= 0 + margin) x = 0 + margin;
+
+            if (y + Container_DateTime.ActualHeight >= Height - margin)
+                y = Height - Container_DateTime.ActualHeight - margin;
+
+            if (y <= 0 + margin) y = 0 + margin;
+
+            Canvas.SetLeft(Container_DateTime, x);
+            Canvas.SetTop(Container_DateTime, y);
         }
     }
 }
