@@ -24,6 +24,9 @@ public partial class TopmostEffectsWindow : Window
 
     private bool isPlayingPrepareClassAlert = false;
     private bool isPlayingDateTimeSlideAnimation = false;
+    private bool isDragingDateTime = false;
+
+    private Point clickPosition_DateTime;
 
     private bool dateTimeSlideInAnimationCompletedRegistered = false;
     private bool dateTimeSlideOutAnimationCompletedRegistered = false;
@@ -84,20 +87,26 @@ public partial class TopmostEffectsWindow : Window
 
         if (!dateTimeSlideInAnimationCompletedRegistered && visible)
         {
-            ani!.Completed += (_, _) => isPlayingDateTimeSlideAnimation = false;
+            ani!.Completed += (_, _) =>
+                isPlayingDateTimeSlideAnimation = false;
             dateTimeSlideInAnimationCompletedRegistered = true;
         }
 
         if (!dateTimeSlideOutAnimationCompletedRegistered && !visible)
         {
-            ani!.Completed += (_, _) => isPlayingDateTimeSlideAnimation = false;
+            ani!.Completed += (_, _) =>
+                isPlayingDateTimeSlideAnimation = false;
             dateTimeSlideOutAnimationCompletedRegistered = true;
         }
 
         Instances.AppConfig!.TopmostEffectsSettings.IsDateTimeVisible = visible;
         Instances.AppConfig!.Save();
 
-        if (!isPlayingDateTimeSlideAnimation) ani!.Begin();
+        if (!isPlayingDateTimeSlideAnimation)
+        {
+            isPlayingDateTimeSlideAnimation = true;
+            ani!.Begin();
+        }
     }
 
     public void PlayPrepareClassAlert()
@@ -109,10 +118,65 @@ public partial class TopmostEffectsWindow : Window
         }
     }
 
-    private void Container_DateTime_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    private void Container_DateTime_MouseDown(object sender, MouseButtonEventArgs e)
     {
-        SetDateTimeVisibility(false);
+        if (e.ChangedButton == MouseButton.Right)
+        {
+            SetDateTimeVisibility(false);
 
-        NotifyIconManager.Rebuild();
+            NotifyIconManager.Rebuild();
+
+            return;
+        }
+
+        Container_DateTime.CaptureMouse();
+
+        isDragingDateTime = true;
+
+        clickPosition_DateTime = e.GetPosition(Container_DateTime);
+
+        var aniIn = Resources["Storyboard_DateTimeSlideIn"] as Storyboard;
+        var aniOut = Resources["Storyboard_DateTimeSlideOut"] as Storyboard;
+
+        aniIn?.Stop();
+        aniOut?.Stop();
+    }
+
+    private void Container_DateTime_MouseUp(object sender, MouseButtonEventArgs e)
+    {
+        isDragingDateTime = false;
+
+        Container_DateTime.ReleaseMouseCapture();
+
+        //SetDateTimeVisibility(true);
+    }
+
+    private void Container_DateTime_MouseMove(object sender, MouseEventArgs e)
+    {
+        if (isDragingDateTime && !isPlayingDateTimeSlideAnimation)
+        {
+            var currentPosition = e.GetPosition(Container_MainCanvas);
+
+#if DEBUG   // Draw mouse movement line
+            var ellipse = new Ellipse()
+            {
+                Width = 3,
+                Height = 3,
+                Fill = new SolidColorBrush(Colors.Red)
+            };
+            Container_MainCanvas.Children.Add(ellipse);
+            Canvas.SetLeft(ellipse, currentPosition.X);
+            Canvas.SetTop(ellipse, currentPosition.Y);
+#endif
+
+            Canvas.SetLeft(
+                Container_DateTime,
+                currentPosition.X - clickPosition_DateTime.X
+            );
+            Canvas.SetTop(
+                Container_DateTime,
+                currentPosition.Y - clickPosition_DateTime.Y
+            );
+        }
     }
 }
