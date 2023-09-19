@@ -108,7 +108,8 @@
                                    FontSize="96"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"
-                                   Foreground="White"/>
+                                   Foreground="White"
+                                   FontFamily="Consolas"/>
                         <Border Height="10"/>
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center">

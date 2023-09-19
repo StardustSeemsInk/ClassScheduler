@@ -169,7 +169,11 @@
                       Canvas.Left="30" Canvas.Top="-100"
                       MouseDown="Container_DateTime_MouseDown"
                       MouseUp="Container_DateTime_MouseUp"
-                      MouseMove="Container_DateTime_MouseMove">
+                      MouseMove="Container_DateTime_MouseMove"
+                      MouseWheel="Container_DateTime_MouseWheel"
+                      TouchDown="Container_DateTime_TouchDown"
+                      TouchMove="Container_DateTime_TouchMove"
+                      TouchUp="Container_DateTime_TouchUp">
                     <Border Background="#AA000000" CornerRadius="10" BorderBrush="#DDFFFFFF" BorderThickness="3">
                         <Border.Effect>
                             <DropShadowEffect Color="Black"

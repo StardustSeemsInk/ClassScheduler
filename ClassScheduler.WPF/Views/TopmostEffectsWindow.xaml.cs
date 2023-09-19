@@ -31,7 +31,11 @@ public partial class TopmostEffectsWindow : Window
     private bool dateTimeSlideInAnimationCompletedRegistered = false;
     private bool dateTimeSlideOutAnimationCompletedRegistered = false;
 
-    private FixedSizedQueue<Point> previousPoints_dateTime = new(6);
+    private double dateTimeShrink_originDistance = 0.0;
+
+    private readonly FixedSizedQueue<Point> previousPoints_dateTime = new(6);
+
+    private readonly Dictionary<int, TouchPoint> touchPoints_dateTime = new();
 
     public TopmostEffectsWindow()
     {
@@ -84,6 +88,27 @@ public partial class TopmostEffectsWindow : Window
 
     internal void SetDateTimeVisibility(bool visible)
     {
+        var cx = Canvas.GetLeft(Container_DateTime);
+        var cy = Canvas.GetTop(Container_DateTime);
+        var w = Container_DateTime.ActualWidth;
+        var h = Container_DateTime.ActualHeight;
+        var W = Width;
+        var H = Height;
+        var m = 30;
+
+        var c1 = cx + w >= W - m;
+        var c3 = cx <= m;
+        var c2 = cy + h >= H - m;
+        var c4 = cy <= m;
+
+        if (c1) cx = W - m - w;
+        if (c3) cx = m;
+        if (c2) cy = H - m - h;
+        if (c4) cy = m;
+
+        Canvas.SetLeft(Container_DateTime, cx);
+        Canvas.SetTop(Container_DateTime, cy);
+
         var aniName = $"Storyboard_DateTimeSlide{(visible ? "In" : "Out")}";
         var ani = Resources[aniName] as Storyboard;
 
@@ -256,17 +281,29 @@ public partial class TopmostEffectsWindow : Window
                     Canvas.SetLeft(Container_DateTime, cx);
                     Canvas.SetTop(Container_DateTime, cy);
 
-                    if (cx + w >= W - m || cx <= m)
+                    var c1 = cx + w >= W - m;
+                    var c3 = cx <= m;
+                    var c2 = cy + h >= H - m;
+                    var c4 = cy <= m;
+
+                    if (c1 || c3)
                     {
                         vx = -vx;
                         afx = -afx;
+
+                        if (c1) cx = W - m - w;
+                        if (c3) cx = m;
                     }
 
-                    if (cy + h >= H - m || cy <= m)
+                    if (c2 || c4)
                     {
                         vy = -vy;
                         afy = -afy;
+
+                        if (c2) cy = H - m - h;
+                        if (c4) cy = m;
                     }
+
                 }));
 
                 await Task.Delay(10);
@@ -274,5 +311,75 @@ public partial class TopmostEffectsWindow : Window
 
             Dispatcher.Invoke(new(() => SetDateTimeVisibility(true)));
         });
+    }
+
+    private void Container_DateTime_TouchDown(object sender, TouchEventArgs e)
+    {
+        Container_DateTime.CaptureTouch(e.TouchDevice);
+
+        var touchPoint = e.GetTouchPoint(Container_MainCanvas);
+
+        touchPoints_dateTime[e.TouchDevice.Id] = touchPoint;
+
+        UpdateOriginDistance();
+    }
+
+    private void Container_DateTime_TouchMove(object sender, TouchEventArgs e)
+    {
+        var touchPoint = e.GetTouchPoint(Container_MainCanvas);
+
+        touchPoints_dateTime[e.TouchDevice.Id] = touchPoint;
+
+        UpdateDateTimeFontSize();
+    }
+
+    private void Container_DateTime_TouchUp(object sender, TouchEventArgs e)
+    {
+        touchPoints_dateTime.Remove(e.TouchDevice.Id);
+
+        Container_DateTime.ReleaseTouchCapture(e.TouchDevice);
+    }
+
+    private void UpdateOriginDistance()
+    {
+        if (touchPoints_dateTime.Values.Count <= 1)
+            return;
+
+        var p1 = touchPoints_dateTime.Values.First().Position;
+        var p2 = touchPoints_dateTime.Values.Last().Position;
+
+        dateTimeShrink_originDistance = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+    }
+
+    private void UpdateDateTimeFontSize()
+    {
+        if (touchPoints_dateTime.Values.Count <= 1)
+            return;
+
+        var p1 = touchPoints_dateTime.Values.First().Position;
+        var p2 = touchPoints_dateTime.Values.Last().Position;
+
+        var distance = Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
+
+        var fontSizeMin = 28;
+
+        var finalFontSize = fontSizeMin + (distance - dateTimeShrink_originDistance) * (3.0 / 4.0);
+
+        if (finalFontSize < fontSizeMin) finalFontSize = fontSizeMin;
+
+        TextBlock_DateTime.FontSize = finalFontSize;
+    }
+
+    private void Container_DateTime_MouseWheel(object sender, MouseWheelEventArgs e)
+    {
+        var fontSizeMin = 28;
+
+        var currentFontSize = TextBlock_DateTime.FontSize;
+
+        currentFontSize += e.Delta > 0 ? Math.Sqrt(e.Delta) : Math.Sqrt(e.Delta * -1) * -1;
+
+        if (currentFontSize <= fontSizeMin) currentFontSize = fontSizeMin;
+
+        TextBlock_DateTime.FontSize = currentFontSize;
     }
 }

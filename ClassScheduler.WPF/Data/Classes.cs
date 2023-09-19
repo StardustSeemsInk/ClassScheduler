@@ -10,7 +10,16 @@ public class Classes
 {
     public string? Name { get; set; }
 
-    public List<ClassModel> ClassesList { get; set; } = new();
+    public List<ClassModel> ClassesList { get; set; } = new()
+    {
+        new()
+        {
+            Name = "name",
+            BeginTime = DateTime.Now,
+            EndTime = DateTime.Now + new TimeSpan(1,0,0),
+            WeekDay = 1,
+        }
+    };
 
     public Classes Sort()
     {
