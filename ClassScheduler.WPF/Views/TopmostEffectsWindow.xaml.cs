@@ -368,6 +368,8 @@ public partial class TopmostEffectsWindow : Window
         if (finalFontSize < fontSizeMin) finalFontSize = fontSizeMin;
 
         TextBlock_DateTime.FontSize = finalFontSize;
+
+        Refresh_Container_DateTime_ShrinkTop();
     }
 
     private void Container_DateTime_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -381,5 +383,12 @@ public partial class TopmostEffectsWindow : Window
         if (currentFontSize <= fontSizeMin) currentFontSize = fontSizeMin;
 
         TextBlock_DateTime.FontSize = currentFontSize;
+
+        Refresh_Container_DateTime_ShrinkTop();
+    }
+
+    private void Refresh_Container_DateTime_ShrinkTop()
+    {
+        Resources["DateTimeShrinkTop"] = Container_DateTime.ActualHeight * -1 - 20;
     }
 }

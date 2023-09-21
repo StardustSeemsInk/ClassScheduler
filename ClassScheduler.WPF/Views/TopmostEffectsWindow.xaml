@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
         mc:Ignorable="d"
         AllowsTransparency="True"
@@ -13,6 +14,8 @@
         Topmost="True" ShowInTaskbar="False"
         Background="Transparent">
     <Window.Resources>
+
+        <core:Double x:Key="DateTimeShrinkTop">-100.0</core:Double>
 
         <Storyboard x:Key="Storyboard_PrepareClassAlert">
             <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
@@ -153,7 +156,8 @@
             <DoubleAnimation Storyboard.TargetName="Container_DateTime"
                              Storyboard.TargetProperty="(Canvas.Top)"
                              Duration="00:00:0.3" FillBehavior="HoldEnd"
-                             From="{Binding (Canvas.Top), ElementName=Container_DateTime}" To="-100">
+                             From="{Binding (Canvas.Top), ElementName=Container_DateTime}"
+                             To="{DynamicResource DateTimeShrinkTop}">
                 <DoubleAnimation.EasingFunction>
                     <CubicEase EasingMode="EaseInOut"/>
                 </DoubleAnimation.EasingFunction>
