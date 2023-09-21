@@ -212,7 +212,7 @@
                     </Border>
                 </Grid>
 
-                <Border Height="20"/>
+                <Border x:Name="Seperator_ClassProgress" Height="20"/>
 
                 <Grid x:Name="Container_ClassProgress">
                     <Border Background="Black"

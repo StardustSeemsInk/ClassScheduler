@@ -45,7 +45,7 @@ public partial class ScheduleWindow : Window
         };
         mainTimer.Start();
 
-        weatherTimer = new Timer() { Interval = 60 * 60 * 1000 };
+        weatherTimer = new Timer() { Interval = 5 * 60 * 1000 };
         weatherTimer.Elapsed += (_, _) => RefreshWeather();
         weatherTimer.Start();
     }
@@ -66,7 +66,13 @@ public partial class ScheduleWindow : Window
             isPlayingClassOverAnimation = false;
             Container_ClassProgress.Visibility = Visibility.Hidden;
             Container_ClassProgress.Opacity = 1;
+            Container_ClassProgress.Height = 0;
+
+            Seperator_ClassProgress.Height = 0;
         };
+
+        Container_ClassProgress.Height = 0;
+        Seperator_ClassProgress.Height = 0;
 
         UpdateDatas();
 
@@ -92,7 +98,7 @@ public partial class ScheduleWindow : Window
         RefreshClasses();
     }
 
-    private void RefreshWeather()
+    public void RefreshWeather()
     {
         var apiKey = "b111b5b1183443ea9d78b0eefb181cfe";
 
@@ -281,9 +287,14 @@ public partial class ScheduleWindow : Window
         if (isPlayingClassOverAnimation == false && classProgress is null)
         {
             Container_ClassProgress.Visibility = Visibility.Hidden;
+            Container_ClassProgress.Height = 0;
+            Seperator_ClassProgress.Height = 0;
         }
         else
         {
+            Seperator_ClassProgress.Height = 20;
+
+            Container_ClassProgress.Height = Double.NaN;
             Container_ClassProgress.Opacity = 1;
             Container_ClassProgress.Visibility = Visibility.Visible;
             TextBlock_ClassesProgress.Text = $"{classProgress:f2} %";
@@ -356,6 +367,9 @@ public partial class ScheduleWindow : Window
 
     internal void PlayClassOverAnimation()
     {
+        Seperator_ClassProgress.Height = 20;
+
+        Container_ClassProgress.Height = double.NaN;
         Container_ClassProgress.Opacity = 1;
         Container_ClassProgress.Visibility = Visibility.Visible;
 

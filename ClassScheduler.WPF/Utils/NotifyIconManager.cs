@@ -50,7 +50,11 @@ internal static class NotifyIconManager
                 BuildItem(
                     "播放下课动画",
                     onClick: (_, _) => Instances.ScheduleWindow!.PlayClassOverAnimation()
-                )
+                ),
+                BuildItem(
+                    "立即刷新天气数据",
+                    onClick: (_, _) => Instances.ScheduleWindow!.RefreshWeather()
+                ),
             }
         ));
         contextMenuStrip.Items.Add(new ToolStripSeparator());
