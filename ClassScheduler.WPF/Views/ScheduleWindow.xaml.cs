@@ -149,6 +149,9 @@ public partial class ScheduleWindow : Window
 
                         var fxDate = today.fxDate;
                         var textDay = today.textDay;
+                        var tempMax = today.tempMax;
+                        var tempMin = today.tempMin;
+                        var windDirDay = today.windDirDay;
 
                         Dispatcher.Invoke(new(() =>
                         {
@@ -158,8 +161,8 @@ public partial class ScheduleWindow : Window
                                 Container_WeatherData.Children.Add(new TextBlock()
                                 {
                                     Foreground = new SolidColorBrush(Colors.White),
-                                    FontSize = 28,
-                                    Text = $"{date[5..]} {textDay}"
+                                    FontSize = 26,
+                                    Text = $"{date[5..]} {textDay} {tempMin}-{tempMax}℃ {windDirDay}"
                                 });
                             }
                             catch
