@@ -1,8 +1,13 @@
 ﻿using ClassScheduler.WPF.Utils;
 using ClassScheduler.WPF.Utils.Converter;
 using Microsoft.Web.WebView2.Wpf;
+using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +19,7 @@ namespace ClassScheduler.WPF.Views;
 public partial class ScheduleWindow : Window
 {
     private readonly Timer mainTimer;
+    private readonly Timer weatherTimer;
 
     private double? classProgress;
     private bool isPlayingClassOverAnimation = false;
@@ -24,8 +30,6 @@ public partial class ScheduleWindow : Window
         InitializeComponent();
 
         Loaded += ScheduleWindow_Loaded;
-
-        UpdateDatas();
 
         mainTimer = new Timer()
         {
@@ -40,6 +44,10 @@ public partial class ScheduleWindow : Window
             }));
         };
         mainTimer.Start();
+
+        weatherTimer = new Timer() { Interval = 60 * 60 * 1000 };
+        weatherTimer.Elapsed += (_, _) => RefreshWeather();
+        weatherTimer.Start();
     }
 
     private void ScheduleWindow_Loaded(object sender, RoutedEventArgs e)
@@ -59,6 +67,10 @@ public partial class ScheduleWindow : Window
             Container_ClassProgress.Visibility = Visibility.Hidden;
             Container_ClassProgress.Opacity = 1;
         };
+
+        UpdateDatas();
+
+        RefreshWeather();
     }
 
     public void UpdateDatas()
@@ -78,6 +90,109 @@ public partial class ScheduleWindow : Window
         TextBlock_DaysLeft.Text = Convert.ToInt32((high_school_entrance_day - today).TotalDays).ToString();
 
         RefreshClasses();
+    }
+
+    private void RefreshWeather()
+    {
+        var apiKey = "b111b5b1183443ea9d78b0eefb181cfe";
+
+        var location = "101260216"; // 播州区
+
+        var apiUrl = $"https://devapi.qweather.com/v7/weather/3d?location={location}&key={apiKey}";
+
+        Container_WeatherData.Children.Clear();
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                using var clientHandler = new HttpClientHandler();
+
+                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                clientHandler.ServerCertificateCustomValidationCallback =
+                    (sender, cert, chain, sslPolicyErrors) => true;
+
+                using HttpClient client = new(clientHandler);
+
+                var tryCount = 0;
+
+                var response = await client.GetAsync(apiUrl);
+
+                while (tryCount < 3)
+                {
+                    if (response.IsSuccessStatusCode) break;
+                    else
+                    {
+                        ++tryCount;
+                        response = await client.GetAsync(apiUrl);
+                    }
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStream = await response.Content.ReadAsStreamAsync();
+
+                    using var gzipStream = new GZipStream(responseStream, CompressionMode.Decompress);
+
+                    using var reader = new StreamReader(gzipStream);
+
+                    var responseBody = reader.ReadToEnd();
+
+                    dynamic jsonDoc = JObject.Parse(responseBody);
+
+                    var count = 0;
+
+                    foreach (var today in jsonDoc.daily)
+                    {
+                        ++count;
+                        if (count > 3) break;
+
+                        var fxDate = today.fxDate;
+                        var textDay = today.textDay;
+
+                        Dispatcher.Invoke(new(() =>
+                        {
+                            try
+                            {
+                                var date = $"{fxDate}";
+                                Container_WeatherData.Children.Add(new TextBlock()
+                                {
+                                    Foreground = new SolidColorBrush(Colors.White),
+                                    FontSize = 28,
+                                    Text = $"{date[5..]} {textDay}"
+                                });
+                            }
+                            catch
+                            {
+                                Container_WeatherData.Children.Add(new TextBlock()
+                                {
+                                    Foreground = new SolidColorBrush(Colors.White),
+                                    FontSize = 28,
+                                    Text = "天气数据解析失败"
+                                });
+                            }
+                        }));
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.Invoke(new(() =>
+                {
+                    Container_WeatherData.Children.Add(new TextBlock()
+                    {
+                        Foreground = new SolidColorBrush(Colors.White),
+                        FontSize = 28,
+                        Text = "天气数据获取失败"
+                    });
+                }));
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+        });
     }
 
     private void RefreshClasses()

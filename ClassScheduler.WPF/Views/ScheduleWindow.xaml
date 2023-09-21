@@ -150,10 +150,10 @@
                                    Foreground="White"
                                    FontFamily="Microsoft YaHei"
                                    Text="距高考还有 "/>
-                        <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Center"
+                        <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Bottom"
                                    FontSize="40"
                                    FontWeight="Bold"
-                                   FontFamily="Microsoft YaHei"
+                                   FontFamily="Consolas"
                                    Foreground="#FFFF5E5E"
                                    Text="233"/>
                         <TextBlock VerticalAlignment="Center"
@@ -258,6 +258,18 @@
                             </TextBlock>
                         </Border>
                     </Border>
+                </Grid>
+
+                <Border Height="20"/>
+
+                <Grid>
+                    <Border Background="Black" Opacity="0.3" CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" Direction="305" ShadowDepth="5" Opacity="0.7" BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel x:Name="Container_WeatherData" Margin="20"/>
                 </Grid>
 
             </StackPanel>
