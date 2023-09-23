@@ -30,6 +30,9 @@ dotnet run
 
 ### 如何为 KitX 打包
 
+> [!WARNING]  
+> KitX Project 正在开发新的 KitX Plugin Studio 用于插件制作及打包等, 以下方式不建议继续使用
+
 ```shell
 # 获取源码
 git clone git@github.com:StardustSeemsInk/ClassScheduler.git
@@ -41,10 +44,10 @@ cd 'ClassScheduler/ClassScheduler.WPF'
 dotnet build -c Release
 
 # 进入生成目录
-cd bin/Release/net6.0-windows/
+cd bin/Release/net7.0-windows/
 
 # 使用 kxpmaker 生成 kxp 插件包
-# 当前目录下会出现 net6.0-windows.kxp 文件
+# 当前目录下会出现 net7.0-windows.kxp 文件
 # 需要提前安装 kxpmaker, 使用 kxpmaker --help 命令查看更多用法
 kxpmaker -s .
 ```

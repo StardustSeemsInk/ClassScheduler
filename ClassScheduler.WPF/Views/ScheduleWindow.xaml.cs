@@ -1,15 +1,30 @@
 ﻿using ClassScheduler.WPF.Utils;
+using ClassScheduler.WPF.Utils.Converter;
+using Microsoft.Web.WebView2.Wpf;
+using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace ClassScheduler.WPF.Views;
 
 public partial class ScheduleWindow : Window
 {
-    private Timer _timer;
+    private readonly Timer mainTimer;
+    private readonly Timer weatherTimer;
+    private readonly Timer sentenceTimer;
+
+    private double? classProgress;
+    private bool isPlayingClassOverAnimation = false;
+    private bool isPlayingClassBeginAnimation = false;
 
     public ScheduleWindow()
     {
@@ -17,21 +32,27 @@ public partial class ScheduleWindow : Window
 
         Loaded += ScheduleWindow_Loaded;
 
-        UpdateDatas();
-
-        _timer = new Timer()
+        mainTimer = new Timer()
         {
             Interval = 5 * 1000,
         };
 
-        _timer.Elapsed += (_, _) =>
+        mainTimer.Elapsed += (_, _) =>
         {
             Dispatcher.Invoke(new(() =>
             {
                 UpdateDatas();
             }));
         };
-        _timer.Start();
+        mainTimer.Start();
+
+        weatherTimer = new Timer() { Interval = 10 * 60 * 1000 };
+        weatherTimer.Elapsed += (_, _) => RefreshWeather();
+        weatherTimer.Start();
+
+        sentenceTimer = new Timer() { Interval = 10 * 60 * 1000 };
+        sentenceTimer.Elapsed += (_, _) => RefreshSentence();
+        sentenceTimer.Start();
     }
 
     private void ScheduleWindow_Loaded(object sender, RoutedEventArgs e)
@@ -40,6 +61,29 @@ public partial class ScheduleWindow : Window
         this.SetBottom();
 
         Left = 0; Top = 0;
+
+        (Resources["Storyboard_ClassBegin"] as Storyboard)!.Completed += (_, _) =>
+        {
+            isPlayingClassBeginAnimation = false;
+        };
+        (Resources["Storyboard_ClassOver"] as Storyboard)!.Completed += (_, _) =>
+        {
+            isPlayingClassOverAnimation = false;
+            Container_ClassProgress.Visibility = Visibility.Hidden;
+            Container_ClassProgress.Opacity = 1;
+            Container_ClassProgress.Height = 0;
+
+            Seperator_ClassProgress.Height = 0;
+        };
+
+        Container_ClassProgress.Height = 0;
+        Seperator_ClassProgress.Height = 0;
+
+        UpdateDatas();
+
+        RefreshWeather();
+
+        RefreshSentence();
     }
 
     public void UpdateDatas()
@@ -61,17 +105,179 @@ public partial class ScheduleWindow : Window
         RefreshClasses();
     }
 
+    public void RefreshWeather()
+    {
+        var apiKey = "b111b5b1183443ea9d78b0eefb181cfe";
+
+        var location = "101260216"; // 播州区
+
+        var apiUrl = $"https://devapi.qweather.com/v7/weather/3d?location={location}&key={apiKey}";
+
+        Container_WeatherData.Children.Clear();
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                using var clientHandler = new HttpClientHandler();
+
+                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                clientHandler.ServerCertificateCustomValidationCallback =
+                    (sender, cert, chain, sslPolicyErrors) => true;
+
+                using HttpClient client = new(clientHandler);
+
+                var tryCount = 0;
+
+                var response = await client.GetAsync(apiUrl);
+
+                while (tryCount < 3)
+                {
+                    if (response.IsSuccessStatusCode) break;
+                    else
+                    {
+                        ++tryCount;
+                        response = await client.GetAsync(apiUrl);
+                    }
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseStream = await response.Content.ReadAsStreamAsync();
+
+                    using var gzipStream = new GZipStream(responseStream, CompressionMode.Decompress);
+
+                    using var reader = new StreamReader(gzipStream);
+
+                    var responseBody = reader.ReadToEnd();
+
+                    dynamic jsonDoc = JObject.Parse(responseBody);
+
+                    var count = 0;
+
+                    foreach (var today in jsonDoc.daily)
+                    {
+                        ++count;
+                        if (count > 3) break;
+
+                        var fxDate = today.fxDate;
+                        var textDay = today.textDay;
+                        var tempMax = today.tempMax;
+                        var tempMin = today.tempMin;
+                        var windDirDay = today.windDirDay;
+
+                        Dispatcher.Invoke(new(() =>
+                        {
+                            var standard_textBlock = new TextBlock()
+                            {
+                                Foreground = new SolidColorBrush(
+                                        Color.FromArgb(
+                                            (byte)(0xFF - (count - 1) * 0x33),
+                                            0xFF, 0xFF, 0xFF
+                                        )
+                                    ),
+                                FontSize = Math.Floor(28 - count * 2.9),
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                            };
+
+                            try
+                            {
+                                var date = $"{fxDate}";
+                                standard_textBlock.Text = $"{date[5..]} {textDay} {tempMin}-{tempMax}℃ {windDirDay}";
+                            }
+                            catch
+                            {
+                                standard_textBlock.Text = "天气数据解析失败";
+                            }
+
+                            Container_WeatherData.Children.Add(standard_textBlock);
+                        }));
+                    }
+                }
+                else
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.Invoke(new(() =>
+                {
+                    Container_WeatherData.Children.Add(new TextBlock()
+                    {
+                        Foreground = new SolidColorBrush(Colors.White),
+                        FontSize = 28,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Text = "天气数据获取失败"
+                    });
+                }));
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+        });
+    }
+
+    public void RefreshSentence()
+    {
+        var apiUrl = "https://v1.hitokoto.cn/?c=d&c=f&encode=text";
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                using var clientHandler = new HttpClientHandler();
+
+                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                clientHandler.ServerCertificateCustomValidationCallback =
+                    (sender, cert, chain, sslPolicyErrors) => true;
+
+                using HttpClient client = new(clientHandler);
+
+                var tryCount = 0;
+
+                var response = await client.GetAsync(apiUrl);
+
+                while (tryCount < 3)
+                {
+                    if (response.IsSuccessStatusCode) break;
+                    else
+                    {
+                        ++tryCount;
+                        response = await client.GetAsync(apiUrl);
+                    }
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+
+                    Dispatcher.Invoke(new(() =>
+                    {
+                        TextBlock_Sentence.Text = $"{responseBody}";
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+        });
+    }
+
     private void RefreshClasses()
     {
-        StackPanel_ClassesContainer.Children.Clear();
+        WrapPanel_ClassesContainer.Children.Clear();
 
         Instances.Classes!.Sort();
 
-        var todayPassedClassesCount = 0;
+        var inClass = false;
+        var passedClassesIndex = 0;
+        var totalPassesClassesCount = Instances.Classes!.ClassesList.Where(
+            x => x.EndTime < DateTime.Now && x.DayOfWeek == DateTime.Now.DayOfWeek.ToInt()
+        ).Count() * 1.0;
 
         foreach (var classModel in Instances.Classes!.ClassesList)
         {
-            if (classModel.DayOfWeek! != (int)DateTime.Now.DayOfWeek) continue;
+            if (classModel.DayOfWeek! != DateTime.Now.DayOfWeek.ToInt()) continue;
 
             var tb = new TextBlock()
             {
@@ -84,24 +290,76 @@ public partial class ScheduleWindow : Window
             var begin = DateTime.Parse(classModel.BeginTime?.ToString("HH:mm")!);
             var end = DateTime.Parse(classModel.EndTime?.ToString("HH:mm")!);
 
+            // 正在上的课
             if (now >= begin && now <= end)
+            {
+                inClass = true;
+
+                classProgress = (now - begin).TotalSeconds / (end - begin).TotalSeconds * 100;
+
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0x5E, 0x5E));
+
+                if ((now - begin).TotalSeconds <= 6 && !isPlayingClassBeginAnimation)
+                {
+                    isPlayingClassBeginAnimation = true;
+                    (Resources["Storyboard_ClassBegin"] as Storyboard)!.Begin();
+                }
+            }
+            // 已完成的课
             else if (now >= end)
             {
-                ++todayPassedClassesCount;
+                ++passedClassesIndex;
 
-                var originColor = 200;
-                var deltaColor = 80;
-                var targetColor = (byte)(originColor - (deltaColor / todayPassedClassesCount) + 20);
+                var originColor = 180;
+                var colorRange = 70;
+                var targetColor = (byte)(originColor + (passedClassesIndex / totalPassesClassesCount) * colorRange);
 
                 tb.Foreground = new SolidColorBrush(
                     Color.FromRgb(targetColor, targetColor, targetColor)
                 );
+
+                if ((now - end).TotalSeconds <= 6 && !isPlayingClassOverAnimation)
+                {
+                    isPlayingClassOverAnimation = true;
+                    (Resources["Storyboard_ClassOver"] as Storyboard)?.Begin();
+                }
             }
+            // 打了预备铃
             else if (now >= (begin - new TimeSpan(0, 2, 0)) && now < begin)
+            {
                 tb.Foreground = new SolidColorBrush(Color.FromRgb(0x03, 0xFC, 0xA5));
 
-            StackPanel_ClassesContainer.Children.Add(tb);
+                if ((now - (begin - new TimeSpan(0, 2, 0))).TotalSeconds <= 6)
+                {
+                    Instances.TopmostEffectsWindow!.PlayPrepareClassAlert();
+                }
+            }
+            // 课间, 即将打预备铃
+            else if (now >= (begin - new TimeSpan(0, 10, 0)) && now < begin)
+                tb.Foreground = new SolidColorBrush(Color.FromRgb(0x8C, 0xC6, 0xED));
+
+            WrapPanel_ClassesContainer.Children.Add(tb);
+        }
+
+        classProgress = inClass ? classProgress : null;
+
+        if (isPlayingClassOverAnimation == false && classProgress is null)
+        {
+            Container_ClassProgress.Visibility = Visibility.Hidden;
+            Container_ClassProgress.Height = 0;
+            Seperator_ClassProgress.Height = 0;
+        }
+        else
+        {
+            Seperator_ClassProgress.Height = 20;
+
+            Container_ClassProgress.Height = Double.NaN;
+            Container_ClassProgress.Opacity = 1;
+            Container_ClassProgress.Visibility = Visibility.Visible;
+            TextBlock_ClassesProgress.Text = $"{classProgress:f2} %";
+
+            if (isPlayingClassOverAnimation)
+                TextBlock_ClassesProgress.Text = "";
         }
     }
 
@@ -113,5 +371,68 @@ public partial class ScheduleWindow : Window
     private void Button_QuitApp_Click(object sender, RoutedEventArgs e)
     {
         Application.Current.Shutdown();
+    }
+
+    public void SetWebViewVisibility(bool visible)
+    {
+        MainWebView.Visibility = visible ? Visibility.Visible : Visibility.Hidden;
+    }
+
+    public WebView2 GetWebView() => MainWebView;
+
+    private void Animation_ScrollInClassOver_Completed(object sender, EventArgs e)
+    {
+        switch (Container_ClassOverAnimation.HorizontalAlignment)
+        {
+            case HorizontalAlignment.Left:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+                break;
+            case HorizontalAlignment.Center:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Stretch;
+                break;
+            case HorizontalAlignment.Right:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Left;
+                break;
+            case HorizontalAlignment.Stretch:
+                Container_ClassOverAnimation.HorizontalAlignment = HorizontalAlignment.Center;
+                break;
+        }
+    }
+
+    private void Animation_ScrollInClassBegin_Completed(object sender, EventArgs e)
+    {
+        switch (Container_ClassBeginAnimation.HorizontalAlignment)
+        {
+            case HorizontalAlignment.Left:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Right;
+                break;
+            case HorizontalAlignment.Center:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Stretch;
+                break;
+            case HorizontalAlignment.Right:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Left;
+                break;
+            case HorizontalAlignment.Stretch:
+                Container_ClassBeginAnimation.HorizontalAlignment = HorizontalAlignment.Center;
+                break;
+        }
+    }
+
+    internal void PlayClassBeginAnimation()
+    {
+        isPlayingClassBeginAnimation = true;
+        (Resources["Storyboard_ClassBegin"] as Storyboard)!.Begin();
+    }
+
+    internal void PlayClassOverAnimation()
+    {
+        Seperator_ClassProgress.Height = 20;
+
+        Container_ClassProgress.Height = double.NaN;
+        Container_ClassProgress.Opacity = 1;
+        Container_ClassProgress.Visibility = Visibility.Visible;
+
+        isPlayingClassOverAnimation = true;
+        (Resources["Storyboard_ClassOver"] as Storyboard)?.Begin();
     }
 }

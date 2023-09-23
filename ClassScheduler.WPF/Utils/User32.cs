@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -6,13 +8,20 @@ using System.Windows.Interop;
 namespace ClassScheduler.WPF.Utils;
 
 [Flags]
-public enum  SendMessageTimeoutFlags : uint
+public enum SendMessageTimeoutFlags : uint
 {
     SMTO_NORMAL = 0x0,
     SMTO_BLOCK = 0x1,
     SMTO_ABORTIFHUNG = 0x2,
     SMTO_NOTIMEOUTIFNOTHUNG = 0x8,
     SMTO_ERRORONEXIT = 0x20
+}
+
+public enum WallPaperStyle : int
+{
+    Tiled,
+    Centered,
+    Stretched
 }
 
 public partial class User32
@@ -68,6 +77,13 @@ public partial class User32
     internal const int GWL_HWNDPARENT = -8;
 
     internal static readonly IntPtr HWND_BOTTOM = new(1);
+
+    internal const int SPI_SETDESKWALLPAPER = 20;
+    internal const int SPIF_UPDATEINIFILE = 0x01;
+    internal const int SPIF_SENDWININICHANGE = 0x02;
+
+    [DllImport(user32dllPath, CharSet = CharSet.Auto)]
+    internal static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 }
 
 public static class User32Extensions
@@ -151,5 +167,35 @@ public static class User32Extensions
             IntPtr.Zero, "SysListView32", "FolderView"
         );
         _ = User32.SetWindowLong(handle, User32.GWL_HWNDPARENT, hprog);
+    }
+
+    public static void SetWallPaper(this string path, WallPaperStyle style)
+    {
+        var key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
+
+        if (style == WallPaperStyle.Stretched)
+        {
+            key?.SetValue(@"WallpaperStyle", 2.ToString());
+            key?.SetValue(@"TileWallpaper", 0.ToString());
+        }
+
+        if (style == WallPaperStyle.Centered)
+        {
+            key?.SetValue(@"WallpaperStyle", 1.ToString());
+            key?.SetValue(@"TileWallpaper", 0.ToString());
+        }
+
+        if (style == WallPaperStyle.Tiled)
+        {
+            key?.SetValue(@"WallpaperStyle", 1.ToString());
+            key?.SetValue(@"TileWallpaper", 1.ToString());
+        }
+
+        User32.SystemParametersInfo(
+            User32.SPI_SETDESKWALLPAPER,
+            0,
+            Path.GetFullPath(path),
+            User32.SPIF_UPDATEINIFILE | User32.SPIF_SENDWININICHANGE
+        );
     }
 }

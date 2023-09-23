@@ -1,9 +1,10 @@
-﻿<Window x:Class="ClassScheduler.WPF.Views.ScheduleWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:Converters="clr-namespace:ClassScheduler.WPF.Converters" x:Class="ClassScheduler.WPF.Views.ScheduleWindow"
         Title="DeskWindow"
         Width="1920"
         Height="1080"
@@ -14,125 +15,280 @@
         WindowStyle="None"
         ShowInTaskbar="False"
         mc:Ignorable="d">
-    <Grid Margin="20">
-        <StackPanel HorizontalAlignment="Right"
-                    VerticalAlignment="Top">
-            <Grid>
-                <Border Background="Black"
-                        Opacity="0.3"
-                        CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                          Direction="305"
-                                          ShadowDepth="5" 
-                                          Opacity="0.7" 
-                                          BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel Margin="20">
-                    <TextBlock x:Name="TextBlock_Time"
-                           Text="10:27"
-                           FontSize="96"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           Foreground="White"/>
-                    <Border Height="10"/>
-                    <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center">
-                        <TextBlock x:Name="TextBlock_Date"
-                               Text="09 月 10 日"
-                               FontSize="36"
-                               HorizontalAlignment="Center"
-                               Foreground="White"/>
-                        <Border Width="20"/>
-                        <TextBlock x:Name="TextBlock_WeekDay"
-                               Text="星期一"
-                               FontSize="36"
-                               HorizontalAlignment="Center"
-                               Foreground="White"/>
+
+    <Window.Resources>
+
+        <Storyboard x:Key="Storyboard_ClassBegin" FillBehavior="HoldEnd">
+            <DoubleAnimation x:Name="Animation_ScrollInClassBegin"
+                             Storyboard.TargetName="Container_ClassBeginAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="0" To="{Binding ActualWidth, ElementName=Container_Classes}"
+                             Duration="00:00:0.5" Completed="Animation_ScrollInClassBegin_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation Storyboard.TargetName="Container_ClassBeginAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="{Binding ActualWidth, ElementName=Container_Classes}" To="0"
+                             Duration="00:00:0.5" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_ClassOver" FillBehavior="HoldEnd">
+            <DoubleAnimation Storyboard.TargetName="Container_ClassProgress"
+                             Storyboard.TargetProperty="Opacity"
+                             From="{Binding Opacity, ElementName=Container_ClassProgress}" To="1"
+                             Duration="00:00:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation x:Name="Animation_ScrollInClassOver"
+                             Storyboard.TargetName="Container_ClassOverAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="0" To="{Binding ActualWidth, ElementName=Container_ClassProgress}"
+                             Duration="00:00:0.5" Completed="Animation_ScrollInClassOver_Completed">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation Storyboard.TargetName="Container_ClassOverAnimation"
+                             Storyboard.TargetProperty="Width"
+                             From="{Binding ActualWidth, ElementName=Container_ClassProgress}" To="0"
+                             Duration="00:00:0.5" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_ClassProgress"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="00:00:0.4" BeginTime="00:00:01.8">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_ClassProgress"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="00:00:00" BeginTime="00:00:02.5"/>
+        </Storyboard>
+
+    </Window.Resources>
+
+    <Grid>
+
+        <wv2:WebView2 x:Name="MainWebView" Visibility="Hidden" Source="https://www.google.com"/>
+
+        <Grid Margin="20">
+            <StackPanel HorizontalAlignment="Right"
+                        VerticalAlignment="Top">
+
+                <Grid x:Name="Container_DateTime">
+                    <Border Background="Black"
+                            Opacity="0.3"
+                            CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="305"
+                                              ShadowDepth="5"
+                                              Opacity="0.7"
+                                              BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel Margin="20">
+                        <TextBlock x:Name="TextBlock_Time"
+                                   Text="10:27"
+                                   FontSize="96"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="White"
+                                   FontFamily="Consolas"/>
+                        <Border Height="10"/>
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <TextBlock x:Name="TextBlock_Date"
+                                       Text="09 月 10 日"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"/>
+                            <Border Width="20"/>
+                            <TextBlock x:Name="TextBlock_WeekDay"
+                                       Text="星期一"
+                                       FontSize="36"
+                                       HorizontalAlignment="Center"
+                                       Foreground="White"/>
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </Grid>
-            <Border Height="20"/>
-            <Grid>
-                <Border Background="Black"
-                        Opacity="0.3"
-                        CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                          Direction="305"
-                                          ShadowDepth="5" 
-                                          Opacity="0.7" 
-                                          BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel Orientation="Horizontal"
-                            Margin="20">
-                    <TextBlock VerticalAlignment="Center"
-                               FontSize="40"
-                               Foreground="White"
-                               FontFamily="Microsoft YaHei"
-                               Text="距高考还有 "/>
-                    <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Center"
-                               FontSize="40"
-                               FontWeight="Bold"
-                               FontFamily="Microsoft YaHei"
-                               Foreground="#FFFF5E5E"
-                               Text="233"/>
-                    <TextBlock VerticalAlignment="Center"
-                               FontSize="40"
-                               Foreground="White"
-                               FontFamily="Microsoft YaHei"
-                               Text=" 天"/>
-                </StackPanel>
-            </Grid>
-            <Border Height="20"/>
-            <Grid>
-                <Border Background="Black"
-                        Opacity="0.3"
-                        CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                          Direction="305"
-                                          ShadowDepth="5" 
-                                          Opacity="0.7" 
-                                          BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel x:Name="StackPanel_ClassesContainer" Margin="20" HorizontalAlignment="Center"
-                            Orientation="Horizontal">
-                    
-                </StackPanel>
-                <!--<TextBlock x:Name="TextBlock_ClassesList" Text="语语语语语语语语语语" Foreground="White" FontSize="32"
-                           HorizontalAlignment="Center" Margin="20"/>-->
-            </Grid>
-            <Border Height="20"/>
-            <!--<Grid>
-                <Border Background="Black"
-                        Opacity="0.3"
-                        CornerRadius="15">
-                    <Border.Effect>
-                        <DropShadowEffect Color="Black"
-                                          Direction="305"
-                                          ShadowDepth="5" 
-                                          Opacity="0.7" 
-                                          BlurRadius="15"/>
-                    </Border.Effect>
-                </Border>
-                <StackPanel Orientation="Horizontal"
-                            Margin="20"
-                            HorizontalAlignment="Right">
-                    <Button x:Name="Button_OpenSettings"
-                            Content="⚙"
-                            FontSize="24"
-                            Click="Button_OpenSettings_Click"/>
-                    <Border Width="20"/>
-                    <Button x:Name="Button_QuitApp"
-                            Content="❎"
-                            FontSize="24"
-                            Click="Button_QuitApp_Click"/>
-                </StackPanel>
-            </Grid>-->
-        </StackPanel>
+                </Grid>
+
+                <Border Height="20"/>
+
+                <Grid>
+                    <Border Background="Black"
+                            Opacity="0.3"
+                            CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="305"
+                                              ShadowDepth="5"
+                                              Opacity="0.7"
+                                              BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel x:Name="Container_DaysLeft" Orientation="Horizontal"
+                                Margin="20">
+                        <TextBlock VerticalAlignment="Center"
+                                   FontSize="40"
+                                   Foreground="White"
+                                   FontFamily="Microsoft YaHei"
+                                   Text="距高考还有 "/>
+                        <TextBlock x:Name="TextBlock_DaysLeft" VerticalAlignment="Bottom"
+                                   FontSize="40"
+                                   FontWeight="Bold"
+                                   FontFamily="Consolas"
+                                   Foreground="#FFFF5E5E"
+                                   Text="233"/>
+                        <TextBlock VerticalAlignment="Center"
+                                   FontSize="40"
+                                   Foreground="White"
+                                   FontFamily="Microsoft YaHei"
+                                   Text=" 天"/>
+                    </StackPanel>
+                </Grid>
+
+                <Border Height="20"/>
+
+                <Grid x:Name="Container_Classes">
+                    <Border Background="Black"
+                            Opacity="0.3"
+                            CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="305"
+                                              ShadowDepth="5"
+                                              Opacity="0.7"
+                                              BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <WrapPanel x:Name="WrapPanel_ClassesContainer" Margin="20" HorizontalAlignment="Center"
+                               Orientation="Horizontal" MaxWidth="330"/>
+
+                    <Border CornerRadius="15">
+                        <Border x:Name="Container_ClassBeginAnimation" Background="#FFFF5E5E" CornerRadius="15"
+                                HorizontalAlignment="Left" Width="0">
+                            <Border.Clip>
+                                <RectangleGeometry RadiusX="15" RadiusY="15">
+                                    <RectangleGeometry.Rect>
+                                        <MultiBinding>
+                                            <MultiBinding.Converter>
+                                                <Converters:RectConverter/>
+                                            </MultiBinding.Converter>
+                                            <Binding ElementName="Container_Classes" Path="ActualWidth"/>
+                                            <Binding ElementName="Container_Classes" Path="ActualHeight"/>
+                                        </MultiBinding>
+                                    </RectangleGeometry.Rect>
+                                </RectangleGeometry>
+                            </Border.Clip>
+                            <TextBlock Text="到点啦" Foreground="White" FontSize="32" Margin="40,0"
+                                       VerticalAlignment="Center">
+                                <TextBlock.HorizontalAlignment>
+                                    <Binding ElementName="Container_ClassBeginAnimation" Path="HorizontalAlignment">
+                                        <Binding.Converter>
+                                            <Converters:HorizontalAlignmentReverseConverter/>
+                                        </Binding.Converter>
+                                    </Binding>
+                                </TextBlock.HorizontalAlignment>
+                            </TextBlock>
+                        </Border>
+                    </Border>
+                </Grid>
+
+                <Border x:Name="Seperator_ClassProgress" Height="20"/>
+
+                <Grid x:Name="Container_ClassProgress">
+                    <Border Background="Black"
+                            Opacity="0.3"
+                            CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="305"
+                                              ShadowDepth="5"
+                                              Opacity="0.7"
+                                              BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <TextBlock x:Name="TextBlock_ClassesProgress" Text="10%" Foreground="White" FontSize="36"
+                               HorizontalAlignment="Right" Margin="20"/>
+
+                    <Border CornerRadius="15">
+                        <Border x:Name="Container_ClassOverAnimation" Background="#FF15CF7E" CornerRadius="15"
+                                HorizontalAlignment="Left" Width="0">
+                            <Border.Clip>
+                                <RectangleGeometry RadiusX="15" RadiusY="15">
+                                    <RectangleGeometry.Rect>
+                                        <MultiBinding>
+                                            <MultiBinding.Converter>
+                                                <Converters:RectConverter/>
+                                            </MultiBinding.Converter>
+                                            <Binding ElementName="Container_ClassProgress" Path="ActualWidth"/>
+                                            <Binding ElementName="Container_ClassProgress" Path="ActualHeight"/>
+                                        </MultiBinding>
+                                    </RectangleGeometry.Rect>
+                                </RectangleGeometry>
+                            </Border.Clip>
+                            <TextBlock Text="自由啦" Foreground="White" FontSize="40" Margin="40,0"
+                                       VerticalAlignment="Center">
+                                <TextBlock.HorizontalAlignment>
+                                    <Binding ElementName="Container_ClassOverAnimation" Path="HorizontalAlignment">
+                                        <Binding.Converter>
+                                            <Converters:HorizontalAlignmentReverseConverter/>
+                                        </Binding.Converter>
+                                    </Binding>
+                                </TextBlock.HorizontalAlignment>
+                            </TextBlock>
+                        </Border>
+                    </Border>
+                </Grid>
+
+                <Border Height="20"/>
+
+                <Grid>
+                    <Border Background="Black" Opacity="0.3" CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" Direction="305" ShadowDepth="5" Opacity="0.7" BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel x:Name="Container_WeatherData" Margin="20" HorizontalAlignment="Center"/>
+                </Grid>
+
+                <Border Height="20"/>
+
+                <Grid>
+                    <Border Background="Black" Opacity="0.3" CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" Direction="305" ShadowDepth="5" Opacity="0.7" BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <TextBlock x:Name="TextBlock_Sentence" Foreground="White" FontSize="32" Margin="20"
+                               MaxWidth="{Binding ActualWidth, ElementName=Container_DaysLeft}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Text="Fetching sentence data ..." FontFamily="FangSong"/>
+                </Grid>
+
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

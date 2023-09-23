@@ -10,25 +10,35 @@ public class Classes
 {
     public string? Name { get; set; }
 
-    public List<ClassModel> ClassesList { get; set; } = new();
+    public List<ClassModel> ClassesList { get; set; } = new()
+    {
+        new()
+        {
+            Name = "name",
+            BeginTime = DateTime.Now,
+            EndTime = DateTime.Now + new TimeSpan(1,0,0),
+            WeekDay = 1,
+        }
+    };
 
     public Classes Sort()
     {
         ClassesList.Sort(
-            new Comparison<ClassModel>(
-                (x, y) =>
+            (x, y) =>
+            {
+                if (x.WeekDay == y.WeekDay)
                 {
-                    if (x.WeekDay == y.WeekDay)
-                    {
-                        if (x.BeginTime == y.BeginTime)
-                            return 0;
-                        else
-                            return x.BeginTime > y.BeginTime ? 1 : -1;
-                    }
-                    else
-                        return x.WeekDay > y.WeekDay ? 1 : -1;
+                    var x_begin = DateTime.Parse(x.BeginTime?.ToString("HH:mm")!);
+                    var y_begin = DateTime.Parse(y.BeginTime?.ToString("HH:mm")!);
+                    var x_end = DateTime.Parse(x.EndTime?.ToString("HH:mm")!);
+                    var y_end = DateTime.Parse(y.EndTime?.ToString("HH:mm")!);
+
+                    if (x_begin == y_begin && x_end == y_end)
+                        return x.Name!.CompareTo(y.Name);
+                    else return x_begin.CompareTo(y_end);
                 }
-            )
+                else return x.WeekDay > y.WeekDay ? 1 : -1;
+            }
         );
 
         return this;
@@ -39,7 +49,7 @@ public static class ClassesExtensions
 {
     public static void Save(
         this Classes classes,
-        string path,
+        string path = "./Data/Classes.json",
         Action<JsonSerializerOptions>? optionsProcessor = null)
     {
         var options = new JsonSerializerOptions()
@@ -49,11 +59,11 @@ public static class ClassesExtensions
         };
         optionsProcessor?.Invoke(options);
 
-        var json = JsonSerializer.Serialize(classes);
+        var json = JsonSerializer.Serialize(classes, options);
         File.WriteAllText(path, json);
     }
 
-    public static Classes? Load(
+    public static Classes? LoadAsClasses(
         this string path,
         Action<JsonSerializerOptions>? optionsProcessor = null)
     {
@@ -63,7 +73,7 @@ public static class ClassesExtensions
         optionsProcessor?.Invoke(options);
 
         var json = File.ReadAllText(path);
-        var classes = JsonSerializer.Deserialize<Classes>(json);
+        var classes = JsonSerializer.Deserialize<Classes>(json, options);
 
         return classes;
     }

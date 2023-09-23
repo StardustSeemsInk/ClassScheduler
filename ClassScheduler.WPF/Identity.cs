@@ -1,6 +1,6 @@
 ﻿using KitX.Contract.CSharp;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 
 namespace ClassScheduler.WPF;
 
