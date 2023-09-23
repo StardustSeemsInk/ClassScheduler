@@ -143,7 +143,7 @@
                         </Border.Effect>
                     </Border>
 
-                    <StackPanel Orientation="Horizontal"
+                    <StackPanel x:Name="Container_DaysLeft" Orientation="Horizontal"
                                 Margin="20">
                         <TextBlock VerticalAlignment="Center"
                                    FontSize="40"
@@ -269,7 +269,23 @@
                         </Border.Effect>
                     </Border>
 
-                    <StackPanel x:Name="Container_WeatherData" Margin="20"/>
+                    <StackPanel x:Name="Container_WeatherData" Margin="20" HorizontalAlignment="Center"/>
+                </Grid>
+
+                <Border Height="20"/>
+
+                <Grid>
+                    <Border Background="Black" Opacity="0.3" CornerRadius="15">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" Direction="305" ShadowDepth="5" Opacity="0.7" BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <TextBlock x:Name="TextBlock_Sentence" Foreground="White" FontSize="32" Margin="20"
+                               MaxWidth="{Binding ActualWidth, ElementName=Container_DaysLeft}"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Text="Fetching sentence data ..." FontFamily="FangSong"/>
                 </Grid>
 
             </StackPanel>

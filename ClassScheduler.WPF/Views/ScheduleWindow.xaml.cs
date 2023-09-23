@@ -20,6 +20,7 @@ public partial class ScheduleWindow : Window
 {
     private readonly Timer mainTimer;
     private readonly Timer weatherTimer;
+    private readonly Timer sentenceTimer;
 
     private double? classProgress;
     private bool isPlayingClassOverAnimation = false;
@@ -45,9 +46,13 @@ public partial class ScheduleWindow : Window
         };
         mainTimer.Start();
 
-        weatherTimer = new Timer() { Interval = 5 * 60 * 1000 };
+        weatherTimer = new Timer() { Interval = 10 * 60 * 1000 };
         weatherTimer.Elapsed += (_, _) => RefreshWeather();
         weatherTimer.Start();
+
+        sentenceTimer = new Timer() { Interval = 10 * 60 * 1000 };
+        sentenceTimer.Elapsed += (_, _) => RefreshSentence();
+        sentenceTimer.Start();
     }
 
     private void ScheduleWindow_Loaded(object sender, RoutedEventArgs e)
@@ -77,6 +82,8 @@ public partial class ScheduleWindow : Window
         UpdateDatas();
 
         RefreshWeather();
+
+        RefreshSentence();
     }
 
     public void UpdateDatas()
@@ -161,25 +168,29 @@ public partial class ScheduleWindow : Window
 
                         Dispatcher.Invoke(new(() =>
                         {
+                            var standard_textBlock = new TextBlock()
+                            {
+                                Foreground = new SolidColorBrush(
+                                        Color.FromArgb(
+                                            (byte)(0xFF - (count - 1) * 0x33),
+                                            0xFF, 0xFF, 0xFF
+                                        )
+                                    ),
+                                FontSize = Math.Floor(28 - count * 2.9),
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                            };
+
                             try
                             {
                                 var date = $"{fxDate}";
-                                Container_WeatherData.Children.Add(new TextBlock()
-                                {
-                                    Foreground = new SolidColorBrush(Colors.White),
-                                    FontSize = 26,
-                                    Text = $"{date[5..]} {textDay} {tempMin}-{tempMax}℃ {windDirDay}"
-                                });
+                                standard_textBlock.Text = $"{date[5..]} {textDay} {tempMin}-{tempMax}℃ {windDirDay}";
                             }
                             catch
                             {
-                                Container_WeatherData.Children.Add(new TextBlock()
-                                {
-                                    Foreground = new SolidColorBrush(Colors.White),
-                                    FontSize = 28,
-                                    Text = "天气数据解析失败"
-                                });
+                                standard_textBlock.Text = "天气数据解析失败";
                             }
+
+                            Container_WeatherData.Children.Add(standard_textBlock);
                         }));
                     }
                 }
@@ -196,9 +207,57 @@ public partial class ScheduleWindow : Window
                     {
                         Foreground = new SolidColorBrush(Colors.White),
                         FontSize = 28,
+                        HorizontalAlignment = HorizontalAlignment.Center,
                         Text = "天气数据获取失败"
                     });
                 }));
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+        });
+    }
+
+    public void RefreshSentence()
+    {
+        var apiUrl = "https://v1.hitokoto.cn/?c=d&c=f&encode=text";
+
+        Task.Run(async () =>
+        {
+            try
+            {
+                using var clientHandler = new HttpClientHandler();
+
+                clientHandler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                clientHandler.ServerCertificateCustomValidationCallback =
+                    (sender, cert, chain, sslPolicyErrors) => true;
+
+                using HttpClient client = new(clientHandler);
+
+                var tryCount = 0;
+
+                var response = await client.GetAsync(apiUrl);
+
+                while (tryCount < 3)
+                {
+                    if (response.IsSuccessStatusCode) break;
+                    else
+                    {
+                        ++tryCount;
+                        response = await client.GetAsync(apiUrl);
+                    }
+                }
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var responseBody = await response.Content.ReadAsStringAsync();
+
+                    Dispatcher.Invoke(new(() =>
+                    {
+                        TextBlock_Sentence.Text = $"{responseBody}";
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine($"Exception: {ex.Message}");
             }
         });

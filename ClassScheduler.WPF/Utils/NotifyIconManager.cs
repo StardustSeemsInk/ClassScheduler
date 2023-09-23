@@ -55,6 +55,10 @@ internal static class NotifyIconManager
                     "立即刷新天气数据",
                     onClick: (_, _) => Instances.ScheduleWindow!.RefreshWeather()
                 ),
+                BuildItem(
+                    "立即刷新一言",
+                    onClick: (_, _) => Instances.ScheduleWindow!.RefreshSentence()
+                ),
             }
         ));
         contextMenuStrip.Items.Add(new ToolStripSeparator());
