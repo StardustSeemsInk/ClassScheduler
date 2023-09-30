@@ -10,19 +10,14 @@ public class HorizontalAlignmentReverseConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         var align = (HorizontalAlignment)value;
-        switch (align)
+        return align switch
         {
-            case HorizontalAlignment.Left:
-                return HorizontalAlignment.Right;
-            case HorizontalAlignment.Center:
-                return HorizontalAlignment.Stretch;
-            case HorizontalAlignment.Right:
-                return HorizontalAlignment.Left;
-            case HorizontalAlignment.Stretch:
-                return HorizontalAlignment.Center;
-        }
-
-        return align;
+            HorizontalAlignment.Left => HorizontalAlignment.Right,
+            HorizontalAlignment.Center => HorizontalAlignment.Stretch,
+            HorizontalAlignment.Right => HorizontalAlignment.Left,
+            HorizontalAlignment.Stretch => HorizontalAlignment.Center,
+            _ => (object)align,
+        };
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -107,6 +107,16 @@ internal static class NotifyIconManager
             }
         ));
         contextMenuStrip.Items.Add(BuildItem(
+            "重启应用程序",
+            onClick: (_, _) =>
+            {
+                Application.Restart();
+
+                Instances.NotifyIcon!.Dispose();
+                Instances.MainWindow!.Exit();
+            }
+        ));
+        contextMenuStrip.Items.Add(BuildItem(
             "退出",
             onClick: (_, _) =>
             {

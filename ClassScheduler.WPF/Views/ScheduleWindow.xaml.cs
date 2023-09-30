@@ -57,8 +57,11 @@ public partial class ScheduleWindow : Window
 
     private void ScheduleWindow_Loaded(object sender, RoutedEventArgs e)
     {
-        this.MoveToBottom();
-        this.SetBottom();
+        if (Instances.AppConfig!.WindowsSettings.ScheduleWindowSettings.IsBottomMost)
+        {
+            this.MoveToBottom();
+            this.SetBottom();
+        }
 
         Left = 0; Top = 0;
 
@@ -107,11 +110,9 @@ public partial class ScheduleWindow : Window
 
     public void RefreshWeather()
     {
-        var apiKey = "b111b5b1183443ea9d78b0eefb181cfe";
+        var apiUrl = Instances.AppConfig!.ApiSettings.WeatherApiSettings.FullUrl;
 
-        var location = "101260216"; // 播州区
-
-        var apiUrl = $"https://devapi.qweather.com/v7/weather/3d?location={location}&key={apiKey}";
+        if (apiUrl is null) return;
 
         Container_WeatherData.Children.Clear();
 

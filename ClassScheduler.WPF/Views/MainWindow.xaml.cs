@@ -63,6 +63,10 @@ public partial class MainWindow : Window
 
         RefreshCurrentWallpaperStyle();
 
+        RefreshWeatherApiSettings();
+
+        RefreshWindowsSettings();
+
         NextWallPaper();
     }
 
@@ -287,5 +291,77 @@ public partial class MainWindow : Window
         Instances.AppConfig!.Save();
 
         RefreshCurrentWallpaperStyle();
+    }
+
+    private void Button_SaveWeatherApiSettings_Click(object sender, RoutedEventArgs e)
+    {
+        var baseUrl = TextBox_ApiSettings_WeatherBaseUrl.Text;
+        var locationId = TextBox_ApiSettings_WeatherLocationId.Text;
+        var key = TextBox_ApiSettings_WeatherKey.Text;
+
+        Instances.AppConfig!.ApiSettings!.WeatherApiSettings!.BaseUrl = baseUrl;
+        Instances.AppConfig!.ApiSettings!.WeatherApiSettings!.LocationId = locationId;
+        Instances.AppConfig!.ApiSettings!.WeatherApiSettings!.Key = key;
+
+        Instances.AppConfig.Save();
+
+        RefreshWeatherApiSettings();
+    }
+
+    private void RefreshWeatherApiSettings()
+    {
+        var weatherConfig = Instances.AppConfig!.ApiSettings.WeatherApiSettings;
+
+        TextBox_ApiSettings_WeatherBaseUrl.Text = weatherConfig?.BaseUrl;
+        TextBox_ApiSettings_WeatherLocationId.Text = weatherConfig?.LocationId;
+        TextBox_ApiSettings_WeatherKey.Text = weatherConfig?.Key;
+    }
+
+    private void PreviewWeatherApiSettings()
+    {
+        if (TextBox_ApiSettings_WeatherFullUrlPreview is not null)
+            TextBox_ApiSettings_WeatherFullUrlPreview.Text = Instances
+                .AppConfig!.ApiSettings.WeatherApiSettings.FullUrl ?? "";
+    }
+
+    private void TextBox_ApiSettings_WeatherBaseUrl_TextChanged(object sender, TextChangedEventArgs e) =>
+        PreviewWeatherApiSettings();
+
+    private void TextBox_ApiSettings_WeatherLocationId_TextChanged(object sender, TextChangedEventArgs e) =>
+        PreviewWeatherApiSettings();
+
+    private void TextBox_ApiSettings_WeatherKey_TextChanged(object sender, TextChangedEventArgs e) =>
+        PreviewWeatherApiSettings();
+
+    private void RefreshWindowsSettings()
+    {
+        var windowsSettings = Instances.AppConfig!.WindowsSettings;
+
+        CheckBox_ScheduleWindowMoveToBottom.IsChecked = windowsSettings.ScheduleWindowSettings.IsBottomMost;
+        CheckBox_ScheduleWindowIsHitTestVisible.IsChecked = windowsSettings.ScheduleWindowSettings.IsHitTestVisible;
+    }
+
+    private void CheckBox_ScheduleWindowMoveToBottom_Checked(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WindowsSettings.ScheduleWindowSettings.IsBottomMost = true;
+        Instances.AppConfig?.Save();
+    }
+
+    private void CheckBox_ScheduleWindowMoveToBottom_Unchecked(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WindowsSettings.ScheduleWindowSettings.IsBottomMost = false;
+        Instances.AppConfig?.Save();
+    }
+
+    private void CheckBox_ScheduleWindowIsHitTestVisible_Checked(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WindowsSettings.ScheduleWindowSettings.IsHitTestVisible = true;
+        Instances.AppConfig?.Save();
+    }
+
+    private void CheckBox_ScheduleWindowIsHitTestVisible_Unchecked(object sender, RoutedEventArgs e)
+    {
+        Instances.AppConfig!.WindowsSettings.ScheduleWindowSettings.IsHitTestVisible = false;
+        Instances.AppConfig?.Save();
     }
 }

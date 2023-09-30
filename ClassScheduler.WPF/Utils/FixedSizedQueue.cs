@@ -21,7 +21,7 @@ public class FixedSizedQueue<T> : ConcurrentQueue<T>
         {
             while (Count > Size)
             {
-                TryDequeue(out T outObj);
+                TryDequeue(out _);
             }
         }
     }
