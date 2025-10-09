@@ -12,13 +12,21 @@ internal static class Instances
         if (!Directory.Exists(Path.GetFullPath("./Data/")))
             Directory.CreateDirectory(Path.GetFullPath("./Data/"));
 
-        Classes = "./Data/Classes.json".Load();
+        AppConfig = "./Data/AppConfig.json".LoadAsAppConfig();
+        AppConfig ??= new();
+        AppConfig.Save();
+
+        Classes = "./Data/Classes.json".LoadAsClasses();
         Classes ??= new();
-        Classes.Save("./Data/Classes.json");
+        Classes.Sort();
+        Classes.Save();
 
         MainWindow = new();
 
         ScheduleWindow = new();
+
+        TopmostEffectsWindow = new();
+        TopmostEffectsWindow.Show();
 
         Controller = new();
     }
@@ -27,7 +35,11 @@ internal static class Instances
 
     internal static ScheduleWindow? ScheduleWindow { get; set; }
 
+    internal static TopmostEffectsWindow? TopmostEffectsWindow { get; set; }
+
     internal static Controller? Controller { get; set; }
+
+    internal static AppConfig? AppConfig { get; set; }
 
     internal static Classes? Classes { get; set; }
 

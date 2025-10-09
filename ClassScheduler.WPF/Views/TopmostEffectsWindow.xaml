@@ -1,0 +1,208 @@
+﻿<Window x:Class="ClassScheduler.WPF.Views.TopmostEffectsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:core="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:ClassScheduler.WPF.Views"
+        mc:Ignorable="d"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        WindowState="Maximized"
+        Title="TopmostEffectsWindow"
+        Width="1920" Height="1080"
+        Topmost="True" ShowInTaskbar="False"
+        Background="Transparent">
+    <Window.Resources>
+
+        <core:Double x:Key="DateTimeShrinkTop">-100.0</core:Double>
+
+        <Storyboard x:Key="Storyboard_PrepareClassAlert">
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="Width"
+                             Duration="00:00:01" From="0" To="3000" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="Height"
+                             Duration="00:00:01" From="0" To="3000" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="(Canvas.Left)"
+                             Duration="00:00:01" From="0" To="-1500" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="(Canvas.Top)"
+                             Duration="00:00:01" From="0" To="-1500" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TextBlock_PrepareClassAlertContent"
+                             Storyboard.TargetProperty="(Canvas.Left)"
+                             Duration="00:00:01" From="-100" To="400" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TextBlock_PrepareClassAlertContent"
+                             Storyboard.TargetProperty="(Canvas.Top)"
+                             Duration="00:00:01" From="-300" To="350" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TextBlock_PrepareClassAlertContent"
+                             Storyboard.TargetProperty="FontSize"
+                             Duration="00:00:01" From="12" To="200" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_Backmask"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="00:00:01" From="0" To="0.7" FillBehavior="HoldEnd">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="Width"
+                             Duration="00:00:01" From="3000" To="0" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="Height"
+                             Duration="00:00:01" From="3000" To="0" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="(Canvas.Left)"
+                             Duration="00:00:01" From="-1500" To="0" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Ellipse_PrepareClassAlertBackground"
+                             Storyboard.TargetProperty="(Canvas.Top)"
+                             Duration="00:00:01" From="-1500" To="0" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TextBlock_PrepareClassAlertContent"
+                             Storyboard.TargetProperty="(Canvas.Left)"
+                             Duration="00:00:01" From="400" To="-100" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TextBlock_PrepareClassAlertContent"
+                             Storyboard.TargetProperty="(Canvas.Top)"
+                             Duration="00:00:01" From="350" To="-300" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="TextBlock_PrepareClassAlertContent"
+                             Storyboard.TargetProperty="FontSize"
+                             Duration="00:00:01" From="200" To="12" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="Container_Backmask"
+                             Storyboard.TargetProperty="Opacity"
+                             Duration="00:00:01" From="0.7" To="0" FillBehavior="HoldEnd"
+                             BeginTime="00:00:03">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_DateTimeSlideIn">
+            <DoubleAnimation Storyboard.TargetName="Container_DateTime"
+                             Storyboard.TargetProperty="(Canvas.Top)"
+                             Duration="00:00:0.3" FillBehavior="HoldEnd"
+                             From="{Binding (Canvas.Top), ElementName=Container_DateTime}" To="30">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+        <Storyboard x:Key="Storyboard_DateTimeSlideOut">
+            <DoubleAnimation Storyboard.TargetName="Container_DateTime"
+                             Storyboard.TargetProperty="(Canvas.Top)"
+                             Duration="00:00:0.3" FillBehavior="HoldEnd"
+                             From="{Binding (Canvas.Top), ElementName=Container_DateTime}"
+                             To="{DynamicResource DateTimeShrinkTop}">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseInOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+
+    </Window.Resources>
+    <Grid>
+        <Border x:Name="Container_Backmask" Background="Black" Opacity="0"/>
+        <Grid x:Name="Container_Root">
+            <Canvas x:Name="Container_MainCanvas">
+                <Grid x:Name="Container_DateTime"
+                      Canvas.Left="30" Canvas.Top="-100"
+                      MouseDown="Container_DateTime_MouseDown"
+                      MouseUp="Container_DateTime_MouseUp"
+                      MouseMove="Container_DateTime_MouseMove"
+                      MouseWheel="Container_DateTime_MouseWheel"
+                      TouchDown="Container_DateTime_TouchDown"
+                      TouchMove="Container_DateTime_TouchMove"
+                      TouchUp="Container_DateTime_TouchUp">
+                    <Border Background="#AA000000" CornerRadius="10" BorderBrush="#DDFFFFFF" BorderThickness="3">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black"
+                                              Direction="305"
+                                              ShadowDepth="5"
+                                              Opacity="0.7"
+                                              BlurRadius="15"/>
+                        </Border.Effect>
+                    </Border>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="TextBlock_DateTime" Text="14:67:46" FontFamily="Consolas"
+                                   Foreground="White" FontSize="28" Margin="25,10"/>
+                    </StackPanel>
+                </Grid>
+            </Canvas>
+        </Grid>
+        <Grid x:Name="Container_PrepareClassAlert">
+            <Canvas>
+                <Ellipse x:Name="Ellipse_PrepareClassAlertBackground"
+                         Width="0" Height="0" Fill="#FFFF5E5E"
+                         Canvas.Left="0" Canvas.Top="0"/>
+                <TextBlock x:Name="TextBlock_PrepareClassAlertContent"
+                           Text="!" FontSize="200" FontWeight="UltraBold" Foreground="White"
+                           Canvas.Left="-100" Canvas.Top="-300" HorizontalAlignment="Left"/>
+            </Canvas>
+        </Grid>
+    </Grid>
+</Window>

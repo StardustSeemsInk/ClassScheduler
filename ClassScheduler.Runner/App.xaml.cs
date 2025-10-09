@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -30,6 +31,8 @@ public partial class App : Application
 
         try
         {
+            AddDllResolveHandler(Path.GetFullPath("./"));
+
             LoadPlugin("./ClassScheduler.WPF.dll");
         }
         catch (Exception o)
@@ -45,6 +48,23 @@ public partial class App : Application
 
             Environment.Exit(1);
         }
+    }
+
+    private static void AddDllResolveHandler(string appendPath)
+    {
+        var domain = AppDomain.CurrentDomain;
+
+        domain.AssemblyResolve += (sender, args) =>
+        {
+            var assemblyFolder = Path.GetFullPath(appendPath);
+            var assemblyPath = Path.Combine(assemblyFolder, new AssemblyName(args.Name).Name + ".dll");
+
+            if (!File.Exists(assemblyPath)) return null;
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+
+            return assembly;
+        };
     }
 
     private static void LoadPlugin(string path)

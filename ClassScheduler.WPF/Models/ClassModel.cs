@@ -1,6 +1,5 @@
-﻿using System;
-using System.IO;
-using ClassScheduler.WPF.Models.Types;
+﻿using ClassScheduler.WPF.Models.Types;
+using System;
 
 namespace ClassScheduler.WPF.Models;
 
@@ -33,7 +32,7 @@ public class ClassModel
         {
             var weekDay = (int)WeekDay!;
             var dividedCount = 0;
-            while(weekDay != 1)
+            while (weekDay != 1)
             {
                 weekDay /= 2;
                 ++dividedCount;
